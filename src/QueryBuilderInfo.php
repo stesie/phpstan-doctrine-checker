@@ -29,7 +29,10 @@ class QueryBuilderInfo
         $this->dirty[] = $alias;
     }
 
-    public function getConflictingFetches()
+    /**
+     * @return string[]
+     */
+    public function getConflictingFetches(): array
     {
         return array_intersect($this->selects, $this->dirty);
     }

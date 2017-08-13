@@ -2,9 +2,9 @@
 
 namespace PHPStanDoctrineChecker\Type;
 
-use PHPStanDoctrineChecker\QueryBuilderInfo;
 use Doctrine\ORM\Query;
 use PHPStan\Type\ObjectType;
+use PHPStanDoctrineChecker\QueryBuilderInfo;
 
 class QueryObjectType extends ObjectType
 {

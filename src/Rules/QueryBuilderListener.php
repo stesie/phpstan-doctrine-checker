@@ -2,44 +2,15 @@
 
 namespace PHPStanDoctrineChecker\Rules;
 
+use PHPStan\Analyser\Scope;
+use PHPStan\Rules\Rule;
 use PHPStanDoctrineChecker\Type\QueryBuilderObjectType;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Scalar\String_;
-use PHPStan\Analyser\Scope;
-use PHPStan\Broker\Broker;
-use PHPStan\Rules\FunctionCallParametersCheck;
-use PHPStan\Rules\Rule;
-use PHPStan\Rules\RuleLevelHelper;
 
 class QueryBuilderListener implements Rule
 {
-    /**
-     * @var Broker
-     */
-    private $broker;
-
-    /**
-     * @var FunctionCallParametersCheck
-     */
-    private $check;
-
-    /**
-     * @var RuleLevelHelper
-     */
-    private $ruleLevelHelper;
-
-    public function __construct(
-        Broker $broker,
-        FunctionCallParametersCheck $check,
-        RuleLevelHelper $ruleLevelHelper
-    )
-    {
-        $this->broker = $broker;
-        $this->check = $check;
-        $this->ruleLevelHelper = $ruleLevelHelper;
-    }
-
     /**
      * @return string Class implementing \PhpParser\Node
      */
@@ -65,8 +36,6 @@ class QueryBuilderListener implements Rule
             return [];
         }
 
-        echo "fluency: {$node->name} \n";
-
         switch ($node->name) {
             case 'select':
                 $calleeType->getQueryBuilderInfo()->resetSelect();
@@ -80,25 +49,10 @@ class QueryBuilderListener implements Rule
                 }
                 break;
 
-            case 'innerJoin':
-                // @todo handle arg 4
-                break;
-
             case 'where':
                 $calleeType->getQueryBuilderInfo()->addDirtyAlias('p');
                 break;
 
-            /* case 'getQuery':
-                $conflicts = $calleeType->getConflictingFetches();
-
-                if (empty($conflicts)) {
-                    return [];
-                }
-
-                return [
-                    'DQL Query uses invalid filtered fetch-join'
-                ];
-                */
             default:
                 echo 'unhandled call: ' . $node->name . PHP_EOL;
             case 'setParameter':

@@ -2,16 +2,16 @@
 
 namespace PHPStanDoctrineChecker\Reflection;
 
-use PHPStanDoctrineChecker\Type\QueryBuilderObjectType;
-use PHPStanDoctrineChecker\Type\QueryObjectType;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
-use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use PHPStanDoctrineChecker\Type\QueryBuilderObjectType;
+use PHPStanDoctrineChecker\Type\QueryObjectType;
+use PhpParser\Node\Expr\MethodCall;
 
 class QueryBuilderReturnTypeExtension implements DynamicMethodReturnTypeExtension
 {

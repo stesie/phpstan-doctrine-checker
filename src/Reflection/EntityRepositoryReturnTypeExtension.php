@@ -2,13 +2,13 @@
 
 namespace PHPStanDoctrineChecker\Reflection;
 
-use PHPStanDoctrineChecker\Type\QueryBuilderObjectType;
 use Doctrine\ORM\EntityRepository;
-use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
 use PHPStan\Type\Type;
+use PHPStanDoctrineChecker\Type\QueryBuilderObjectType;
+use PhpParser\Node\Expr\MethodCall;
 
 class EntityRepositoryReturnTypeExtension implements DynamicMethodReturnTypeExtension
 {

@@ -2,43 +2,14 @@
 
 namespace PHPStanDoctrineChecker\Rules;
 
+use PHPStan\Analyser\Scope;
+use PHPStan\Rules\Rule;
 use PHPStanDoctrineChecker\Type\QueryObjectType;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
-use PHPStan\Analyser\Scope;
-use PHPStan\Broker\Broker;
-use PHPStan\Rules\FunctionCallParametersCheck;
-use PHPStan\Rules\Rule;
-use PHPStan\Rules\RuleLevelHelper;
 
 class FetchJoinCheckerRule implements Rule
 {
-    /**
-     * @var Broker
-     */
-    private $broker;
-
-    /**
-     * @var FunctionCallParametersCheck
-     */
-    private $check;
-
-    /**
-     * @var RuleLevelHelper
-     */
-    private $ruleLevelHelper;
-
-    public function __construct(
-        Broker $broker,
-        FunctionCallParametersCheck $check,
-        RuleLevelHelper $ruleLevelHelper
-    )
-    {
-        $this->broker = $broker;
-        $this->check = $check;
-        $this->ruleLevelHelper = $ruleLevelHelper;
-    }
-
     /**
      * @return string Class implementing \PhpParser\Node
      */
@@ -64,8 +35,6 @@ class FetchJoinCheckerRule implements Rule
             return [];
         }
 
-        echo "fluency: {$node->name} \n";
-
         if ($node->name !== 'getSingleResult') {
             return [];
         }
@@ -77,7 +46,7 @@ class FetchJoinCheckerRule implements Rule
         }
 
         return [
-            'DQL Query uses invalid filtered fetch-join'
+            'DQL Query uses invalid filtered fetch-join',
         ];
     }
 }
