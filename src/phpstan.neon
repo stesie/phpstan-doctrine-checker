@@ -1,0 +1,17 @@
+services:
+	-
+		class: PHPStanDoctrineChecker\Reflection\EntityRepositoryReturnTypeExtension
+		tags:
+			- phpstan.broker.dynamicMethodReturnTypeExtension
+	-
+		class: PHPStanDoctrineChecker\Reflection\QueryBuilderReturnTypeExtension
+		tags:
+			- phpstan.broker.dynamicMethodReturnTypeExtension
+	-
+		class: PHPStanDoctrineChecker\Rules\FetchJoinCheckerRule
+		tags:
+			- phpstan.rules.rule
+	-
+		class: PHPStanDoctrineChecker\Rules\QueryBuilderListener
+		tags:
+			- phpstan.rules.rule
