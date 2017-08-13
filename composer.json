@@ -20,7 +20,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "PHPStanDoctrineCheckerTests\\": "tests"
+            "PHPStanDoctrineChecker\\": "tests/PHPStanDoctrineChecker"
         }
     },
     "require-dev": {
