@@ -17,6 +17,15 @@ class IntegrationTest extends TestCase
         $this->assertSame(19, $error->getLine());
     }
 
+    public function testBasicViolationWithChainedCalls()
+    {
+        $errors = $this->runAnalyse(__DIR__ . '/data/BasicViolationCallChainTest.php');
+        $this->assertCount(1, $errors);
+        $error = $errors[0];
+        $this->assertSame('DQL Query uses invalid filtered fetch-join', $error->getMessage());
+        $this->assertSame(11, $error->getLine());
+    }
+
     /**
      * @param string $file
      * @return \PHPStan\Analyser\Error[]|string[]

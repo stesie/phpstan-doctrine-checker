@@ -9,12 +9,23 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use PHPStanDoctrineChecker\Service\QueryBuilderListener;
 use PHPStanDoctrineChecker\Type\QueryBuilderObjectType;
 use PHPStanDoctrineChecker\Type\QueryObjectType;
 use PhpParser\Node\Expr\MethodCall;
 
 class QueryBuilderReturnTypeExtension implements DynamicMethodReturnTypeExtension
 {
+    /**
+     * @var QueryBuilderListener
+     */
+    private $queryBuilderListener;
+
+    public function __construct(QueryBuilderListener $queryBuilderListener)
+    {
+        $this->queryBuilderListener = $queryBuilderListener;
+    }
+
     public static function getClass(): string
     {
         return QueryBuilder::class;
@@ -41,6 +52,9 @@ class QueryBuilderReturnTypeExtension implements DynamicMethodReturnTypeExtensio
         }
 
         if ($returnType->getClass() === QueryBuilder::class) {
+            // tell node processor
+            $this->queryBuilderListener->processNode($calleeType, $methodCall);
+
             // pass on fluency
             return $calleeType;
         }

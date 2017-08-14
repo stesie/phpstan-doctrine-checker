@@ -4,12 +4,23 @@ namespace PHPStanDoctrineChecker\Rules;
 
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
-use PHPStanDoctrineChecker\Type\QueryObjectType;
+use PHPStanDoctrineChecker\Service\QueryBuilderListener;
+use PHPStanDoctrineChecker\Type\QueryBuilderObjectType;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 
-class FetchJoinCheckerRule implements Rule
+class QueryBuilderListenerRule implements Rule
 {
+    /**
+     * @var QueryBuilderListener
+     */
+    private $queryBuilderListener;
+
+    public function __construct(QueryBuilderListener $queryBuilderListener)
+    {
+        $this->queryBuilderListener = $queryBuilderListener;
+    }
+
     /**
      * @return string Class implementing \PhpParser\Node
      */
@@ -29,24 +40,13 @@ class FetchJoinCheckerRule implements Rule
             throw new \LogicException();
         }
 
-        if ($node->name !== 'getSingleResult') {
-            return [];
-        }
-
         $calleeType = $scope->getType($node->var);
 
-        if (!$calleeType instanceof QueryObjectType) {
+        if (!$calleeType instanceof QueryBuilderObjectType) {
             return [];
         }
 
-        $conflicts = $calleeType->getQueryBuilderInfo()->getConflictingFetches();
-
-        if (empty($conflicts)) {
-            return [];
-        }
-
-        return [
-            'DQL Query uses invalid filtered fetch-join',
-        ];
+        $this->queryBuilderListener->processNode($calleeType, $node);
+        return [];
     }
 }

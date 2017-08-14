@@ -12,6 +12,8 @@ services:
 		tags:
 			- phpstan.rules.rule
 	-
-		class: PHPStanDoctrineChecker\Rules\QueryBuilderListener
+		class: PHPStanDoctrineChecker\Rules\QueryBuilderListenerRule
 		tags:
 			- phpstan.rules.rule
+	-
+		class: PHPStanDoctrineChecker\Service\QueryBuilderListener
