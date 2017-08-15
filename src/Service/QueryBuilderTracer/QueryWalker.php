@@ -27,6 +27,11 @@ class QueryWalker
             return;
         }
 
+        if ($node instanceof AST\BetweenExpression) {
+            $this->walkBetweenExpression($node);
+            return;
+        }
+
         if ($node instanceof AST\ComparisonExpression) {
             $this->walkComparisonExpression($node);
             return;
@@ -127,5 +132,12 @@ class QueryWalker
     private function walkConditionalFactor(AST\ConditionalFactor $expr)
     {
         $this->walk($expr->conditionalPrimary);
+    }
+
+    private function walkBetweenExpression(AST\BetweenExpression $expr)
+    {
+        $this->walk($expr->expression);
+        $this->walk($expr->leftBetweenExpression);
+        $this->walk($expr->rightBetweenExpression);
     }
 }

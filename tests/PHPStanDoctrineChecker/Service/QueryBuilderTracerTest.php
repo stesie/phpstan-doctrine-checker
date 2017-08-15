@@ -116,4 +116,12 @@ class QueryBuilderTracerTest extends TestCase
 
         $this->assertSame(['u', 'p'], $qbInfo->getDirtyAliases());
     }
+
+    public function testBetween()
+    {
+        $qbInfo = new QueryBuilderInfo('x');
+        (new QueryBuilderTracer())->processConditionString('u.age BETWEEN 23 AND 42', $qbInfo);
+
+        $this->assertSame(['u'], $qbInfo->getDirtyAliases());
+    }
 }
