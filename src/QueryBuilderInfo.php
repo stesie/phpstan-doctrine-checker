@@ -7,6 +7,11 @@ class QueryBuilderInfo
     /**
      * @var string[]
      */
+    private $rootAliases;
+
+    /**
+     * @var string[]
+     */
     private $selects = [];
 
     /**
@@ -19,6 +24,11 @@ class QueryBuilderInfo
      */
     private $isRangeFiltered = false;
 
+    public function __construct(string $alias)
+    {
+        $this->rootAliases = [$alias];
+    }
+
     public function resetSelect()
     {
         $this->selects = [];
@@ -28,7 +38,6 @@ class QueryBuilderInfo
     {
         $this->selects[] = $alias;
     }
-
 
     public function resetWhere()
     {
@@ -45,7 +54,7 @@ class QueryBuilderInfo
      */
     public function getConflictingFetches(): array
     {
-        return array_intersect($this->selects, $this->dirty);
+        return array_intersect(array_diff($this->selects, $this->rootAliases), $this->dirty);
     }
 
     /**

@@ -31,7 +31,17 @@ class QueryBuilderTracer
                 /* fall through */
             case 'andWhere':
             case 'orWhere':
-                $calleeType->getQueryBuilderInfo()->addDirtyAlias('p');
+                $whereArg = $node->args[0]->value;
+                if (!$whereArg instanceof String_) {
+                    throw new \LogicException('not yet implemented');
+                }
+
+                // 'u.name = :name'
+                if (!preg_match('/(\S+)\./', $whereArg->value, $matches)) {
+                    throw new \LogicException('pattern not yet sufficient');
+                }
+
+                $calleeType->getQueryBuilderInfo()->addDirtyAlias($matches[1]);
                 break;
 
             case 'setFirstResult':

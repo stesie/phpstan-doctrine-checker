@@ -13,11 +13,11 @@ class QueryBuilderObjectType extends ObjectType
      */
     private $queryBuilderInfo;
 
-    public function __construct()
+    public function __construct(string $alias)
     {
         parent::__construct(QueryBuilder::class);
 
-        $this->queryBuilderInfo = new QueryBuilderInfo();
+        $this->queryBuilderInfo = new QueryBuilderInfo($alias);
     }
 
     /**

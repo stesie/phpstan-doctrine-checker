@@ -8,6 +8,12 @@ use PHPStanDoctrineChecker\TestCase;
 
 class IntegrationTest extends TestCase
 {
+    public function testBasicAcceptableFiltering()
+    {
+        $errors = $this->runAnalyse(__DIR__ . '/data/BasicAcceptableFilter.php');
+        $this->assertCount(0, $errors);
+    }
+
     public function testBasicViolation()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/BasicViolationTest.php');

@@ -9,6 +9,7 @@ use PHPStan\Type\DynamicMethodReturnTypeExtension;
 use PHPStan\Type\Type;
 use PHPStanDoctrineChecker\Type\QueryBuilderObjectType;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Scalar\String_;
 
 class EntityRepositoryReturnTypeExtension implements DynamicMethodReturnTypeExtension
 {
@@ -24,6 +25,12 @@ class EntityRepositoryReturnTypeExtension implements DynamicMethodReturnTypeExte
 
     public function getTypeFromMethodCall(MethodReflection $methodReflection, MethodCall $methodCall, Scope $scope): Type
     {
-        return new QueryBuilderObjectType();
+        $aliasArg = $methodCall->args[0]->value;
+
+        if (!$aliasArg instanceof String_) {
+            throw new \LogicException('not yet implemented');
+        }
+
+        return new QueryBuilderObjectType($aliasArg->value);
     }
 }
