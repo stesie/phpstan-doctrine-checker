@@ -57,6 +57,11 @@ class QueryWalker
             return;
         }
 
+        if ($node instanceof AST\InExpression) {
+            $this->walkInExpression($node);
+            return;
+        }
+
         if ($node instanceof AST\InputParameter) {
             /* parameters don't taint anything -> ignore */
             return;
@@ -139,5 +144,14 @@ class QueryWalker
         $this->walk($expr->expression);
         $this->walk($expr->leftBetweenExpression);
         $this->walk($expr->rightBetweenExpression);
+    }
+
+    private function walkInExpression(AST\InExpression $expr)
+    {
+        $this->walk($expr->expression);
+
+        if ($expr->subselect !== null) {
+            $this->walk($expr->subselect);
+        }
     }
 }
