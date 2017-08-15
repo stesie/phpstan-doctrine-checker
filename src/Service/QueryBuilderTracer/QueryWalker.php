@@ -32,8 +32,18 @@ class QueryWalker
             return;
         }
 
+        if ($node instanceof AST\ConditionalExpression) {
+            $this->walkConditionalExpression($node);
+            return;
+        }
+
         if ($node instanceof AST\ConditionalPrimary) {
             $this->walkConditionalPrimary($node);
+            return;
+        }
+
+        if ($node instanceof AST\ConditionalTerm) {
+            $this->walkConditionalTerm($node);
             return;
         }
 
@@ -92,6 +102,20 @@ class QueryWalker
             }
 
             $this->walk($expr->subselect);
+        }
+    }
+
+    private function walkConditionalTerm(AST\ConditionalTerm $expr)
+    {
+        foreach ($expr->conditionalFactors as $factor) {
+            $this->walk($factor);
+        }
+    }
+
+    private function walkConditionalExpression(AST\ConditionalExpression $expr)
+    {
+        foreach ($expr->conditionalTerms as $factor) {
+            $this->walk($factor);
         }
     }
 }

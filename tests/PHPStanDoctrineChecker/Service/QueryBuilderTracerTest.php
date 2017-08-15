@@ -62,4 +62,43 @@ class QueryBuilderTracerTest extends TestCase
 
         $this->assertSame(['u'], $qbInfo->getDirtyAliases());
     }
+
+    public function testComparisonWithAnd()
+    {
+        $qbInfo = new QueryBuilderInfo('x');
+        (new QueryBuilderTracer())->processConditionString('u.name = \'Rolf\' AND p.type = \'work\'', $qbInfo);
+
+        $this->assertSame(['u', 'p'], $qbInfo->getDirtyAliases());
+    }
+
+    public function testComparisonWithMultipleAnd()
+    {
+        $qbInfo = new QueryBuilderInfo('x');
+        (new QueryBuilderTracer())->processConditionString(
+            'u.name = \'Rolf\' AND p.type = \'work\' AND 1 = 2 AND 1 = 2 AND 1 = 2',
+            $qbInfo
+        );
+
+        $this->assertSame(['u', 'p'], $qbInfo->getDirtyAliases());
+    }
+
+    public function testComparisonWithOr()
+    {
+        $qbInfo = new QueryBuilderInfo('x');
+        (new QueryBuilderTracer())->processConditionString('u.name = \'Rolf\' OR p.type = \'work\'', $qbInfo);
+
+        $this->assertSame(['u', 'p'], $qbInfo->getDirtyAliases());
+    }
+
+    public function testComparisonWithMultipleOr()
+    {
+        $qbInfo = new QueryBuilderInfo('x');
+        (new QueryBuilderTracer())->processConditionString(
+            'u.name = \'Rolf\' OR p.type = \'work\' OR 1 = 2 OR 1 = 2 OR 1 = 2',
+            $qbInfo
+        );
+
+        $this->assertSame(['u', 'p'], $qbInfo->getDirtyAliases());
+    }
+
 }
