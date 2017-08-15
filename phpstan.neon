@@ -1,0 +1,7 @@
+parameters:
+    autoload_files:
+        - %currentWorkingDirectory%/vendor/autoload.php
+        - %currentWorkingDirectory%/tests/TestCase.php
+
+    ignoreErrors:
+        - '/Parameter .* expects .*, PHPUnit_Framework_MockObject_MockObject given./'

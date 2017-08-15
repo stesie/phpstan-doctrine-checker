@@ -89,9 +89,7 @@ class QueryBuilderTracer
         $parser = new Parser($query);
         $parser->getLexer()->moveNext();
 
-        $ce = $parser->ConditionalExpression();
-
         $walker = new QueryWalker($queryBuilderInfo);
-        $walker->walk($ce);
+        $walker->walk($parser->ConditionalExpression());
     }
 }

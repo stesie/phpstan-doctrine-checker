@@ -58,24 +58,40 @@ class QueryWalker
     private function walkConditionalPrimary(AST\ConditionalPrimary $conditionalPrimary)
     {
         if ($conditionalPrimary->isSimpleConditionalExpression()) {
+            if ($conditionalPrimary->simpleConditionalExpression === null) {
+                throw new \LogicException();
+            }
+
             $this->walk($conditionalPrimary->simpleConditionalExpression);
         } else {
+            if ($conditionalPrimary->conditionalExpression === null) {
+                throw new \LogicException();
+            }
+
             $this->walk($conditionalPrimary->conditionalExpression);
         }
     }
 
-    private function walkComparisonExpression(AST\ComparisonExpression $ce)
+    private function walkComparisonExpression(AST\ComparisonExpression $expr)
     {
-        $this->walk($ce->leftExpression);
-        $this->walk($ce->rightExpression);
+        $this->walk($expr->leftExpression);
+        $this->walk($expr->rightExpression);
     }
 
-    private function walkArithmeticExpression(AST\ArithmeticExpression $ce)
+    private function walkArithmeticExpression(AST\ArithmeticExpression $expr)
     {
-        if ($ce->isSimpleArithmeticExpression()) {
-            $this->walk($ce->simpleArithmeticExpression);
+        if ($expr->isSimpleArithmeticExpression()) {
+            if ($expr->simpleArithmeticExpression === null) {
+                throw new \LogicException();
+            }
+
+            $this->walk($expr->simpleArithmeticExpression);
         } else {
-            $this->walk($ce->subselect);
+            if ($expr->subselect === null) {
+                throw new \LogicException();
+            }
+
+            $this->walk($expr->subselect);
         }
     }
 }
