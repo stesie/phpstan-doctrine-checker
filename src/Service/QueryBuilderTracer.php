@@ -2,7 +2,11 @@
 
 namespace PHPStanDoctrineChecker\Service;
 
+use Doctrine\ORM\Query;
+use Doctrine\ORM\Query\Parser;
 use PHPStanDoctrineChecker\QueryBuilderInfo;
+use PHPStanDoctrineChecker\Service\QueryBuilderTracer\DummyEntityManager;
+use PHPStanDoctrineChecker\Service\QueryBuilderTracer\QueryWalker;
 use PHPStanDoctrineChecker\Type\QueryBuilderObjectType;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
@@ -70,11 +74,24 @@ class QueryBuilderTracer
             throw new \LogicException('not yet implemented');
         }
 
-        // 'u.name = :name'
-        if (!preg_match('/(\S+)\./', $whereArg->value, $matches)) {
-            throw new \LogicException('pattern not yet sufficient');
-        }
+        $this->processConditionString($whereArg->value, $queryBuilderInfo);
+    }
 
-        $queryBuilderInfo->addDirtyAlias($matches[1]);
+    /**
+     * @param string $conditionStr
+     * @param QueryBuilderInfo $queryBuilderInfo
+     */
+    public function processConditionString(string $conditionStr, QueryBuilderInfo $queryBuilderInfo)
+    {
+        $query = new Query(new DummyEntityManager());
+        $query->setDQL($conditionStr);
+
+        $parser = new Parser($query);
+        $parser->getLexer()->moveNext();
+
+        $ce = $parser->ConditionalExpression();
+
+        $walker = new QueryWalker($queryBuilderInfo);
+        $walker->walk($ce);
     }
 }

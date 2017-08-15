@@ -46,7 +46,17 @@ class QueryBuilderInfo
 
     public function addDirtyAlias(string $alias)
     {
-        $this->dirty[] = $alias;
+        if (!in_array($alias, $this->dirty)) {
+            $this->dirty[] = $alias;
+        }
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getDirtyAliases(): array
+    {
+        return $this->dirty;
     }
 
     /**

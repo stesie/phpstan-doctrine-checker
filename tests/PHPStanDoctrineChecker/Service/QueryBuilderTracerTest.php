@@ -1,0 +1,65 @@
+<?php declare(strict_types = 1);
+
+namespace PHPStanDoctrineChecker\Service;
+
+use PHPStanDoctrineChecker\QueryBuilderInfo;
+use PHPUnit\Framework\TestCase;
+
+class QueryBuilderTracerTest extends TestCase
+{
+    public function testComparisonOfLiteralBooleans()
+    {
+        $qbInfo = new QueryBuilderInfo('x');
+        (new QueryBuilderTracer())->processConditionString('true = true', $qbInfo);
+
+        $this->assertEmpty($qbInfo->getDirtyAliases());
+    }
+
+    public function testComparisonOfLiteralNumbers()
+    {
+        $qbInfo = new QueryBuilderInfo('x');
+        (new QueryBuilderTracer())->processConditionString('23 != 42', $qbInfo);
+
+        $this->assertEmpty($qbInfo->getDirtyAliases());
+    }
+
+    public function testComparisonOfFieldWithLiteralString()
+    {
+        $qbInfo = new QueryBuilderInfo('x');
+        (new QueryBuilderTracer())->processConditionString('u.name = \'Rolf\'', $qbInfo);
+
+        $this->assertSame(['u'], $qbInfo->getDirtyAliases());
+    }
+
+    public function testComparisonOfFieldWithLiteralStringYodaStyle()
+    {
+        $qbInfo = new QueryBuilderInfo('x');
+        (new QueryBuilderTracer())->processConditionString('\'Rolf\' = u.name', $qbInfo);
+
+        $this->assertSame(['u'], $qbInfo->getDirtyAliases());
+    }
+
+    public function testComparisonOfSameFieldWithItself()
+    {
+        $qbInfo = new QueryBuilderInfo('x');
+        (new QueryBuilderTracer())->processConditionString('u.name = u.name', $qbInfo);
+
+        $this->assertSame(['u'], $qbInfo->getDirtyAliases());
+    }
+
+    public function testComparisonOfTwoFields()
+    {
+        $qbInfo = new QueryBuilderInfo('x');
+        (new QueryBuilderTracer())->processConditionString('u1.name = u2.name', $qbInfo);
+
+        $this->assertSame(['u1', 'u2'], $qbInfo->getDirtyAliases());
+    }
+
+    public function testComparisonOfFieldWithParameter()
+    {
+        $qbInfo = new QueryBuilderInfo('x');
+        (new QueryBuilderTracer())->processConditionString('u.name = :name', $qbInfo);
+
+        $this->assertSame(['u'], $qbInfo->getDirtyAliases());
+    }
+}

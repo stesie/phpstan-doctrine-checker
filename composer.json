@@ -34,8 +34,8 @@
     },
     "scripts": {
         "lint": "vendor/bin/parallel-lint src",
-        "phpcbf": "vendor/bin/phpcbf --standard=ruleset.xml --extensions=php -sp src tests",
-        "phpcs": "vendor/bin/phpcs --standard=ruleset.xml --extensions=php -sp src tests",
+        "phpcbf": "vendor/bin/phpcbf --standard=ruleset.xml --extensions=php --ignore=DummyEntityManager.php -sp src tests",
+        "phpcs": "vendor/bin/phpcs --standard=ruleset.xml --extensions=php --ignore=DummyEntityManager.php -sp src tests",
         "phpstan": "vendor/bin/phpstan analyse run -c phpstan.neon --level 7 src tests",
         "phpunit": "vendor/bin/phpunit --config=tests/phpunit.xml tests",
         "test": [
