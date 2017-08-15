@@ -43,7 +43,7 @@ class QueryWalker
         }
 
         if ($node instanceof AST\ConditionalFactor) {
-            $this->walkConditionalFactor($node);
+            $this->walk($node->conditionalPrimary);
             return;
         }
 
@@ -59,6 +59,11 @@ class QueryWalker
 
         if ($node instanceof AST\InputParameter) {
             /* parameters don't taint anything -> ignore */
+            return;
+        }
+
+        if ($node instanceof AST\LikeExpression) {
+            $this->walk($node->stringExpression);
             return;
         }
 
@@ -127,11 +132,6 @@ class QueryWalker
         foreach ($expr->conditionalTerms as $factor) {
             $this->walk($factor);
         }
-    }
-
-    private function walkConditionalFactor(AST\ConditionalFactor $expr)
-    {
-        $this->walk($expr->conditionalPrimary);
     }
 
     private function walkBetweenExpression(AST\BetweenExpression $expr)

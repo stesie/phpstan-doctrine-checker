@@ -124,4 +124,12 @@ class QueryBuilderTracerTest extends TestCase
 
         $this->assertSame(['u'], $qbInfo->getDirtyAliases());
     }
+
+    public function testLike()
+    {
+        $qbInfo = new QueryBuilderInfo('x');
+        (new QueryBuilderTracer())->processConditionString('u.name LIKE \'x%\'', $qbInfo);
+
+        $this->assertSame(['u'], $qbInfo->getDirtyAliases());
+    }
 }
