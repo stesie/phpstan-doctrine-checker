@@ -108,4 +108,12 @@ class QueryBuilderTracerTest extends TestCase
 
         $this->assertSame(['u'], $qbInfo->getDirtyAliases());
     }
+
+    public function testConditionalExpressionWithinPrimary()
+    {
+        $qbInfo = new QueryBuilderInfo('x');
+        (new QueryBuilderTracer())->processConditionString('u.name = \'Rolf\' OR (1 = 2 AND p.type = \'work\')', $qbInfo);
+
+        $this->assertSame(['u', 'p'], $qbInfo->getDirtyAliases());
+    }
 }
