@@ -77,6 +77,11 @@ class QueryWalker
             return;
         }
 
+        if ($node instanceof AST\NullComparisonExpression) {
+            $this->walk($node->expression);
+            return;
+        }
+
         if ($node instanceof AST\PathExpression) {
             $this->queryBuilderInfo->addDirtyAlias($node->identificationVariable);
             return;

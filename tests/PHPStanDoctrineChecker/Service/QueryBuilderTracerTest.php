@@ -140,4 +140,20 @@ class QueryBuilderTracerTest extends TestCase
 
         $this->assertSame(['u'], $qbInfo->getDirtyAliases());
     }
+
+    public function testParameterIsNull()
+    {
+        $qbInfo = new QueryBuilderInfo('x');
+        (new QueryBuilderTracer())->processConditionString(':foo IS NULL', $qbInfo);
+
+        $this->assertSame([], $qbInfo->getDirtyAliases());
+    }
+
+    public function testFieldIsNull()
+    {
+        $qbInfo = new QueryBuilderInfo('x');
+        (new QueryBuilderTracer())->processConditionString('u.name IS NOT NULL', $qbInfo);
+
+        $this->assertSame(['u'], $qbInfo->getDirtyAliases());
+    }
 }
