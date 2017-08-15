@@ -20,7 +20,7 @@ before_script:
   - if [ "${DEPENDENCIES}" = "highest" ]; then composer update --prefer-dist --no-interaction --no-progress; fi;
 
 script:
-  - mkdir -p run
+  - mkdir -p run tmp/cache
   - composer run-script test
 
 after_script:
