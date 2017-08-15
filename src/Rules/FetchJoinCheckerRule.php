@@ -39,14 +39,16 @@ class FetchJoinCheckerRule implements Rule
             return [];
         }
 
-        $conflicts = $calleeType->getQueryBuilderInfo()->getConflictingFetches();
+        $errors = [];
 
-        if (empty($conflicts)) {
-            return [];
+        if (!empty($calleeType->getQueryBuilderInfo()->getConflictingFetches())) {
+            $errors[] = 'DQL Query uses invalid filtered fetch-join';
         }
 
-        return [
-            'DQL Query uses invalid filtered fetch-join',
-        ];
+        if ($calleeType->getQueryBuilderInfo()->isRangeFiltered()) {
+            $errors[] = 'DQL Query uses setFirstResult/setMaxResults with fetch-join';
+        }
+
+        return $errors;
     }
 }

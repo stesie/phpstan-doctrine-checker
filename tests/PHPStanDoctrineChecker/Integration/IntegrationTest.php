@@ -26,6 +26,15 @@ class IntegrationTest extends TestCase
         $this->assertSame(11, $error->getLine());
     }
 
+    public function testRangeFilterUse()
+    {
+        $errors = $this->runAnalyse(__DIR__ . '/data/RangeFilterTest.php');
+        $this->assertCount(1, $errors);
+        $error = $errors[0];
+        $this->assertSame('DQL Query uses setFirstResult/setMaxResults with fetch-join', $error->getMessage());
+        $this->assertSame(11, $error->getLine());
+    }
+
     /**
      * @param string $file
      * @return \PHPStan\Analyser\Error[]|string[]

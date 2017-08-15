@@ -14,6 +14,11 @@ class QueryBuilderInfo
      */
     private $dirty = [];
 
+    /**
+     * @var bool
+     */
+    private $isRangeFiltered = false;
+
     public function resetSelect()
     {
         $this->selects = [];
@@ -22,6 +27,12 @@ class QueryBuilderInfo
     public function addSelect(string $alias)
     {
         $this->selects[] = $alias;
+    }
+
+
+    public function resetWhere()
+    {
+        $this->dirty = [];
     }
 
     public function addDirtyAlias(string $alias)
@@ -35,5 +46,21 @@ class QueryBuilderInfo
     public function getConflictingFetches(): array
     {
         return array_intersect($this->selects, $this->dirty);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRangeFiltered(): bool
+    {
+        return $this->isRangeFiltered;
+    }
+
+    /**
+     * @param bool $isRangeFiltered
+     */
+    public function setIsRangeFiltered(bool $isRangeFiltered)
+    {
+        $this->isRangeFiltered = $isRangeFiltered;
     }
 }
