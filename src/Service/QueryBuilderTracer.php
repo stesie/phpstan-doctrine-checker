@@ -31,6 +31,7 @@ class QueryBuilderTracer
 
             case 'join':
             case 'innerJoin':
+            case 'leftJoin':
                 if (count($node->args) >= 4) {
                     $this->processWherePart($node->args[3]->value, $queryBuilderInfo);
                 }
