@@ -6,7 +6,7 @@ use PHPStanDoctrineChecker\Type\QueryBuilderObjectType;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Scalar\String_;
 
-class QueryBuilderListener
+class QueryBuilderTracer
 {
     public function processNode(QueryBuilderObjectType $calleeType, MethodCall $node)
     {

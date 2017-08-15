@@ -9,7 +9,7 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
-use PHPStanDoctrineChecker\Service\QueryBuilderListener;
+use PHPStanDoctrineChecker\Service\QueryBuilderTracer;
 use PHPStanDoctrineChecker\Type\QueryBuilderObjectType;
 use PHPStanDoctrineChecker\Type\QueryObjectType;
 use PhpParser\Node\Expr\MethodCall;
@@ -17,11 +17,11 @@ use PhpParser\Node\Expr\MethodCall;
 class QueryBuilderReturnTypeExtension implements DynamicMethodReturnTypeExtension
 {
     /**
-     * @var QueryBuilderListener
+     * @var QueryBuilderTracer
      */
     private $queryBuilderListener;
 
-    public function __construct(QueryBuilderListener $queryBuilderListener)
+    public function __construct(QueryBuilderTracer $queryBuilderListener)
     {
         $this->queryBuilderListener = $queryBuilderListener;
     }

@@ -4,7 +4,7 @@ namespace PHPStanDoctrineChecker\Rules;
 
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
-use PHPStanDoctrineChecker\Service\QueryBuilderListener;
+use PHPStanDoctrineChecker\Service\QueryBuilderTracer;
 use PHPStanDoctrineChecker\Type\QueryBuilderObjectType;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
@@ -12,11 +12,11 @@ use PhpParser\Node\Expr\MethodCall;
 class QueryBuilderListenerRule implements Rule
 {
     /**
-     * @var QueryBuilderListener
+     * @var QueryBuilderTracer
      */
     private $queryBuilderListener;
 
-    public function __construct(QueryBuilderListener $queryBuilderListener)
+    public function __construct(QueryBuilderTracer $queryBuilderListener)
     {
         $this->queryBuilderListener = $queryBuilderListener;
     }

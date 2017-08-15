@@ -16,4 +16,4 @@ services:
 		tags:
 			- phpstan.rules.rule
 	-
-		class: PHPStanDoctrineChecker\Service\QueryBuilderListener
+		class: PHPStanDoctrineChecker\Service\QueryBuilderTracer
