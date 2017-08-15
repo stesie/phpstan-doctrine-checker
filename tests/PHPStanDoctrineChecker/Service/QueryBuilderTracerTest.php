@@ -101,4 +101,11 @@ class QueryBuilderTracerTest extends TestCase
         $this->assertSame(['u', 'p'], $qbInfo->getDirtyAliases());
     }
 
+    public function testComparisonWithNot()
+    {
+        $qbInfo = new QueryBuilderInfo('x');
+        (new QueryBuilderTracer())->processConditionString('NOT u.name = \'Rolf\'', $qbInfo);
+
+        $this->assertSame(['u'], $qbInfo->getDirtyAliases());
+    }
 }

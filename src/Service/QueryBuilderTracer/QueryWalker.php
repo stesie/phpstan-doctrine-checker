@@ -37,6 +37,11 @@ class QueryWalker
             return;
         }
 
+        if ($node instanceof AST\ConditionalFactor) {
+            $this->walkConditionalFactor($node);
+            return;
+        }
+
         if ($node instanceof AST\ConditionalPrimary) {
             $this->walkConditionalPrimary($node);
             return;
@@ -117,5 +122,10 @@ class QueryWalker
         foreach ($expr->conditionalTerms as $factor) {
             $this->walk($factor);
         }
+    }
+
+    private function walkConditionalFactor(AST\ConditionalFactor $expr)
+    {
+        $this->walk($expr->conditionalPrimary);
     }
 }
