@@ -1,5 +1,9 @@
 # PHPStan Doctrine Checker
 
+[![Build Status](https://travis-ci.org/stesie/phpstan-doctrine-checker.svg?branch=master)](https://travis-ci.org/stesie/phpstan-doctrine-checker)
+[![Coverage Status](https://coveralls.io/repos/github/stesie/phpstan-doctrine-checker/badge.svg?branch=master)](https://coveralls.io/github/stesie/phpstan-doctrine-checker?branch=master)
+![PHPStan](https://img.shields.io/badge/style-level%207-brightgreen.svg?style=flat-square&label=phpstan)
+
 PHPStan Doctrine Checker is an extension for [PHPStan](https://github.com/phpstan/phpstan), that provides
 extra checks for PHPStan.
 
