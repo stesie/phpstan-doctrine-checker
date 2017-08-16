@@ -46,7 +46,7 @@ class QueryBuilderListenerRule implements Rule
             return [];
         }
 
-        $this->queryBuilderListener->processNode($calleeType, $node);
+        $this->queryBuilderListener->processNode($calleeType->getQueryBuilderInfo(), $node, $scope);
         return [];
     }
 }

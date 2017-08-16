@@ -53,7 +53,7 @@ class QueryBuilderReturnTypeExtension implements DynamicMethodReturnTypeExtensio
 
         if ($returnType->getClass() === QueryBuilder::class) {
             // tell node processor
-            $this->queryBuilderListener->processNode($calleeType, $methodCall);
+            $this->queryBuilderListener->processNode($calleeType->getQueryBuilderInfo(), $methodCall, $scope);
 
             // pass on fluency
             return $calleeType;
