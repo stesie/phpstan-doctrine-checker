@@ -139,12 +139,31 @@ class QueryBuilderTracer
 
         $arg = reset($args);
 
-        if (!$arg instanceof Arg) {
-            throw new \InvalidArgumentException('$args to processExprIsNull must be of Arg type');
-        }
-
         if (!$arg->value instanceof String_) {
             throw new NotImplementedException('expr()->isNull Arguments !== String_ not handled yet');
+        }
+
+        if (!preg_match('/^(\S+)\.\S+$/', $arg->value->value, $matches)) {
+            throw new NotImplementedException('Parse error: field spec not understood: ' . $arg->value->value);
+        }
+
+        $queryBuilderInfo->addDirtyAlias($matches[1]);
+    }
+
+    /**
+     * @param Arg[] $args
+     * @param QueryBuilderInfo $queryBuilderInfo
+     */
+    private function processExprIn(array $args, QueryBuilderInfo $queryBuilderInfo)
+    {
+        if (count($args) !== 2) {
+            throw new NotImplementedException('Handle Parse Error: two args expected');
+        }
+
+        $arg = reset($args);
+
+        if (!$arg->value instanceof String_) {
+            throw new NotImplementedException('expr()->in Argument(0) !== String_ not handled yet');
         }
 
         if (!preg_match('/^(\S+)\.\S+$/', $arg->value->value, $matches)) {
@@ -177,6 +196,10 @@ class QueryBuilderTracer
 
             case 'isNull':
                 $this->processExprIsNull($whereArg->args, $queryBuilderInfo);
+                return;
+
+            case 'in':
+                $this->processExprIn($whereArg->args, $queryBuilderInfo);
                 return;
         }
 
