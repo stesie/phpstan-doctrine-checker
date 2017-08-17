@@ -109,7 +109,7 @@ class QueryBuilderTracer
      * @param Arg[] $args
      * @param QueryBuilderInfo $queryBuilderInfo
      */
-    private function processExprEq(array $args, QueryBuilderInfo $queryBuilderInfo)
+    private function processExprCondition(array $args, QueryBuilderInfo $queryBuilderInfo)
     {
         if (count($args) !== 2) {
             throw new NotImplementedException('Handle Parse Error: two args expected');
@@ -177,7 +177,8 @@ class QueryBuilderTracer
     {
         switch ($whereArg->name) {
             case 'eq':
-                $this->processExprEq($whereArg->args, $queryBuilderInfo);
+            case 'lte':
+                $this->processExprCondition($whereArg->args, $queryBuilderInfo);
                 return;
 
             case 'orX':
