@@ -63,6 +63,7 @@ Stuff I would really like to see implemented
 - [ ] back-propagate filtering done on inner join'ed related tables, i.e. if you fetch join
       foo and bar tables, but baz (which depends on bar) is filtered ... then if baz is filtered
       out, it'll eliminate bar and (maybe) only partly hydrate foo.
+- [ ] parse raw DQL
 
 ## Contributing
 
