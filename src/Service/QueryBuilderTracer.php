@@ -80,14 +80,10 @@ class QueryBuilderTracer
         if ($whereArg instanceof MethodCall) {
             $thisPtr = $scope->getType($whereArg->var);
 
-            if ($thisPtr instanceof ObjectType &&
-                $thisPtr->getClass() === Query\Expr::class &&
-                $whereArg->name === 'eq'
-            ) {
-                $this->processExprEq($whereArg->args, $queryBuilderInfo);
+            if ($thisPtr instanceof ObjectType && $thisPtr->getClass() === Query\Expr::class) {
+                $this->processWhereExpression($whereArg, $queryBuilderInfo, $scope);
                 return;
             }
-
         }
 
         throw new \LogicException('not yet implemented');
@@ -128,5 +124,30 @@ class QueryBuilderTracer
         }, $args);
 
         $this->processConditionString(implode(' = ', $args), $queryBuilderInfo);
+    }
+
+    private function processWhereExpression(MethodCall $whereArg, QueryBuilderInfo $queryBuilderInfo, Scope $scope)
+    {
+        switch ($whereArg->name) {
+            case 'eq':
+                $this->processExprEq($whereArg->args, $queryBuilderInfo);
+                return;
+
+            case 'orX':
+                foreach ($whereArg->args as $arg) {
+                    if (!$arg instanceof Arg) {
+                        throw new \LogicException('$whereArg->args $arg is not of type Arg');
+                    }
+
+                    if (!$arg->value instanceof Expr) {
+                        throw new \LogicException('$arg->value not Expr');
+                    }
+
+                    $this->processWherePart($arg->value, $queryBuilderInfo, $scope);
+                }
+                return;
+        }
+
+        throw new \LogicException('unhandled Where $qb->expr()->...');
     }
 }
