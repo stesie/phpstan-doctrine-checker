@@ -1,4 +1,4 @@
-# PHPStan Doctrine Checker
+# PHPStan Doctrine (Fetch-Join) Checker
 
 [![Build Status](https://travis-ci.org/stesie/phpstan-doctrine-checker.svg?branch=master)](https://travis-ci.org/stesie/phpstan-doctrine-checker)
 [![Coverage Status](https://coveralls.io/repos/github/stesie/phpstan-doctrine-checker/badge.svg?branch=master)](https://coveralls.io/github/stesie/phpstan-doctrine-checker?branch=master)
