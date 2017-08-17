@@ -4,7 +4,7 @@ namespace PHPStanDoctrineChecker\Integration\data;
 
 use Doctrine\ORM\EntityRepository;
 
-class BasicViolationCallChainTest
+class ObjectHydrationWithGetResult
 {
     public function run(EntityRepository $repository)
     {
