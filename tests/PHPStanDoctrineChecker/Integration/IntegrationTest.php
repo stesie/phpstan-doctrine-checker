@@ -68,6 +68,15 @@ class IntegrationTest extends TestCase
         $this->assertSame(13, $error->getLine());
     }
 
+    public function testExprIsNullViolation()
+    {
+        $errors = $this->runAnalyse(__DIR__ . '/data/ExprIsNullViolationTest.php');
+        $this->assertCount(1, $errors);
+        $error = $errors[0];
+        $this->assertSame('DQL Query uses invalid filtered fetch-join', $error->getMessage());
+        $this->assertSame(13, $error->getLine());
+    }
+
     public function testRangeFilterUse()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/RangeFilterTest.php');

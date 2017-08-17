@@ -126,6 +126,34 @@ class QueryBuilderTracer
         $this->processConditionString(implode(' = ', $args), $queryBuilderInfo);
     }
 
+
+    /**
+     * @param Arg[] $args
+     * @param QueryBuilderInfo $queryBuilderInfo
+     */
+    private function processExprIsNull(array $args, QueryBuilderInfo $queryBuilderInfo)
+    {
+        if (count($args) !== 1) {
+            throw new NotImplementedException('Handle Parse Error: only one arg expected');
+        }
+
+        $arg = reset($args);
+
+        if (!$arg instanceof Arg) {
+            throw new \InvalidArgumentException('$args to processExprIsNull must be of Arg type');
+        }
+
+        if (!$arg->value instanceof String_) {
+            throw new NotImplementedException('expr()->isNull Arguments !== String_ not handled yet');
+        }
+
+        if (!preg_match('/^(\S+)\.\S+$/', $arg->value->value, $matches)) {
+            throw new NotImplementedException('Parse error: field spec not understood: ' . $arg->value->value);
+        }
+
+        $queryBuilderInfo->addDirtyAlias($matches[1]);
+    }
+
     private function processWhereExpression(MethodCall $whereArg, QueryBuilderInfo $queryBuilderInfo, Scope $scope)
     {
         switch ($whereArg->name) {
@@ -145,6 +173,10 @@ class QueryBuilderTracer
 
                     $this->processWherePart($arg->value, $queryBuilderInfo, $scope);
                 }
+                return;
+
+            case 'isNull':
+                $this->processExprIsNull($whereArg->args, $queryBuilderInfo);
                 return;
         }
 
