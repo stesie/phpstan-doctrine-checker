@@ -37,10 +37,16 @@ class ExpressionBuilderCheckerTest extends IntegrationTestCase
         $this->assertEquals(['x'], $queryBuilderInfo->getDirtyAliases());
     }
 
-    public function testExprLteViolation()
+    public function testExprLte()
     {
-        $errors = $this->runAnalyse(__DIR__ . '/data/ExprLteViolationTest.php');
-        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 13, $errors);
+        $queryBuilderInfo = new QueryBuilderInfo('u');
+
+        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'lte', [
+            new Arg(new String_('info.age')),
+            new Arg(new String_(':age')),
+        ]);
+
+        $this->assertEquals(['info'], $queryBuilderInfo->getDirtyAliases());
     }
 
     public function testExprOrXViolation()
@@ -49,10 +55,26 @@ class ExpressionBuilderCheckerTest extends IntegrationTestCase
         $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 13, $errors);
     }
 
-    public function testExprIsNullViolation()
+    public function testExprIsNull()
     {
-        $errors = $this->runAnalyse(__DIR__ . '/data/ExprIsNullViolationTest.php');
-        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 13, $errors);
+        $queryBuilderInfo = new QueryBuilderInfo('u');
+
+        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'isNull', [
+            new Arg(new String_('info.age')),
+        ]);
+
+        $this->assertEquals(['info'], $queryBuilderInfo->getDirtyAliases());
+    }
+
+    public function testExprIsNullWithoutFieldName()
+    {
+        $queryBuilderInfo = new QueryBuilderInfo('u');
+
+        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'isNull', [
+            new Arg(new String_('info')),
+        ]);
+
+        $this->assertEquals(['info'], $queryBuilderInfo->getDirtyAliases());
     }
 
     public function testExprIn()
@@ -61,7 +83,7 @@ class ExpressionBuilderCheckerTest extends IntegrationTestCase
 
         $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'in', [
             new Arg(new String_('p.type')),
-            new Arg(new Expr\Array_([new String_(':type')])),
+            new Arg(new Expr\Array_([new Expr\ArrayItem(new String_(':type'))])),
         ]);
 
         $this->assertEquals(['p'], $queryBuilderInfo->getDirtyAliases());
@@ -73,7 +95,7 @@ class ExpressionBuilderCheckerTest extends IntegrationTestCase
 
         $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'in', [
             new Arg(new String_('p')),
-            new Arg(new Expr\Array_([new String_(':phoneNumber1')])),
+            new Arg(new Expr\Array_([new Expr\ArrayItem(new String_(':phoneNumber'))])),
         ]);
 
         $this->assertEquals(['p'], $queryBuilderInfo->getDirtyAliases());
