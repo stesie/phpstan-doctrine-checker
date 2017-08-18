@@ -49,10 +49,27 @@ class ExpressionBuilderCheckerTest extends IntegrationTestCase
         $this->assertEquals(['info'], $queryBuilderInfo->getDirtyAliases());
     }
 
-    public function testExprOrXViolation()
+    public function testExprOrX()
     {
-        $errors = $this->runAnalyse(__DIR__ . '/data/ExprOrXViolationTest.php');
-        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 13, $errors);
+        $queryBuilderInfo = new QueryBuilderInfo('u');
+
+        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'orX', [
+            new Arg(
+                new Expr\MethodCall(
+                    new Expr\MethodCall(
+                        new Expr\Variable('queryBuilder'),
+                        'expr'
+                    ),
+                    'eq',
+                    [
+                        new Arg(new String_('xyz.type')),
+                        new Arg(new String_(':type')),
+                    ]
+                )
+            ),
+        ]);
+
+        $this->assertEquals(['xyz'], $queryBuilderInfo->getDirtyAliases());
     }
 
     public function testExprIsNull()
