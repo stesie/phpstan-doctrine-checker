@@ -6,10 +6,10 @@ use Doctrine\ORM\Query;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
 use PHPStanDoctrineChecker\QueryBuilderInfo;
+use PHPUnit\Framework\TestCase;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Scalar\String_;
-use PHPUnit\Framework\TestCase;
 
 class QueryBuilderTracerExpressionBuilderTest extends TestCase
 {
