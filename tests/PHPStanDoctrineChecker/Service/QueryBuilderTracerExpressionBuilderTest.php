@@ -1,17 +1,17 @@
 <?php declare(strict_types = 1);
 
-namespace PHPStanDoctrineChecker\Integration;
+namespace PHPStanDoctrineChecker\Service;
 
 use Doctrine\ORM\Query;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
 use PHPStanDoctrineChecker\QueryBuilderInfo;
-use PHPStanDoctrineChecker\Service\QueryBuilderTracer;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Scalar\String_;
+use PHPUnit\Framework\TestCase;
 
-class ExpressionBuilderCheckerTest extends IntegrationTestCase
+class QueryBuilderTracerExpressionBuilderTest extends TestCase
 {
     public function testExprEq()
     {
