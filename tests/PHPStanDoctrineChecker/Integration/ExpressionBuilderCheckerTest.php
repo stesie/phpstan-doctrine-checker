@@ -67,6 +67,18 @@ class ExpressionBuilderCheckerTest extends IntegrationTestCase
         $this->assertEquals(['p'], $queryBuilderInfo->getDirtyAliases());
     }
 
+    public function testExprInWithoutFieldName()
+    {
+        $queryBuilderInfo = new QueryBuilderInfo('u');
+
+        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'in', [
+            new Arg(new String_('p')),
+            new Arg(new Expr\Array_([new String_(':phoneNumber1')])),
+        ]);
+
+        $this->assertEquals(['p'], $queryBuilderInfo->getDirtyAliases());
+    }
+
     /**
      * @param QueryBuilderInfo $queryBuilderInfo
      * @param string $exprMethodName

@@ -166,7 +166,7 @@ class QueryBuilderTracer
             throw new NotImplementedException('expr()->in Argument(0) !== String_ not handled yet');
         }
 
-        if (!preg_match('/^(\S+)\.\S+$/', $arg->value->value, $matches)) {
+        if (!preg_match('/^(\S+?)(?:\.\S+)?$/', $arg->value->value, $matches)) {
             throw new NotImplementedException('Parse error: field spec not understood: ' . $arg->value->value);
         }
 
