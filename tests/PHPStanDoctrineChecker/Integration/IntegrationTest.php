@@ -2,136 +2,77 @@
 
 namespace PHPStanDoctrineChecker\Integration;
 
-use PHPStan\Analyser\Analyser;
-use PHPStan\File\FileHelper;
-use PHPStanDoctrineChecker\TestCase;
-
-class IntegrationTest extends TestCase
+class IntegrationTest extends IntegrationTestCase
 {
     public function testBasicAcceptableFiltering()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/BasicAcceptableFilter.php');
-        $this->assertCount(0, $errors);
+        $this->assertNoErrors($errors);
     }
 
     public function testBasicViolation()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/BasicViolationTest.php');
-        $this->assertCount(1, $errors);
-        $error = $errors[0];
-        $this->assertSame('DQL Query uses invalid filtered fetch-join', $error->getMessage());
-        $this->assertSame(19, $error->getLine());
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 19, $errors);
     }
 
     public function testBasicViolationWithChainedCalls()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/BasicViolationCallChainTest.php');
-        $this->assertCount(1, $errors);
-        $error = $errors[0];
-        $this->assertSame('DQL Query uses invalid filtered fetch-join', $error->getMessage());
-        $this->assertSame(11, $error->getLine());
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 11, $errors);
     }
 
     public function testBasicViolationInInnerJoin()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/BasicViolationInInnerJoinTest.php');
-        $this->assertCount(1, $errors);
-        $error = $errors[0];
-        $this->assertSame('DQL Query uses invalid filtered fetch-join', $error->getMessage());
-        $this->assertSame(11, $error->getLine());
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 11, $errors);
     }
 
     public function testBasicViolationInLeftJoin()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/BasicViolationInLeftJoinTest.php');
-        $this->assertCount(1, $errors);
-        $error = $errors[0];
-        $this->assertSame('DQL Query uses invalid filtered fetch-join', $error->getMessage());
-        $this->assertSame(11, $error->getLine());
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 11, $errors);
     }
 
     public function testExprEqViolation()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/ExprEqViolationTest.php');
-        $this->assertCount(1, $errors);
-        $error = $errors[0];
-        $this->assertSame('DQL Query uses invalid filtered fetch-join', $error->getMessage());
-        $this->assertSame(13, $error->getLine());
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 13, $errors);
     }
 
     public function testExprLteViolation()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/ExprLteViolationTest.php');
-        $this->assertCount(1, $errors);
-        $error = $errors[0];
-        $this->assertSame('DQL Query uses invalid filtered fetch-join', $error->getMessage());
-        $this->assertSame(13, $error->getLine());
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 13, $errors);
     }
 
     public function testExprOrXViolation()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/ExprOrXViolationTest.php');
-        $this->assertCount(1, $errors);
-        $error = $errors[0];
-        $this->assertSame('DQL Query uses invalid filtered fetch-join', $error->getMessage());
-        $this->assertSame(13, $error->getLine());
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 13, $errors);
     }
 
     public function testExprIsNullViolation()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/ExprIsNullViolationTest.php');
-        $this->assertCount(1, $errors);
-        $error = $errors[0];
-        $this->assertSame('DQL Query uses invalid filtered fetch-join', $error->getMessage());
-        $this->assertSame(13, $error->getLine());
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 13, $errors);
     }
 
     public function testExprInViolation()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/ExprInViolationTest.php');
-        $this->assertCount(1, $errors);
-        $error = $errors[0];
-        $this->assertSame('DQL Query uses invalid filtered fetch-join', $error->getMessage());
-        $this->assertSame(13, $error->getLine());
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 13, $errors);
     }
 
     public function testRangeFilterUse()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/RangeFilterTest.php');
-        $this->assertCount(1, $errors);
-        $error = $errors[0];
-        $this->assertSame('DQL Query uses setFirstResult/setMaxResults with fetch-join', $error->getMessage());
-        $this->assertSame(11, $error->getLine());
+        $this->assertSingleError('DQL Query uses setFirstResult/setMaxResults with fetch-join', 11, $errors);
     }
 
     public function testObjectHydrationWithGetResult()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/ObjectHydrationWithGetResult.php');
-        $this->assertCount(1, $errors);
-        $error = $errors[0];
-        $this->assertSame('DQL Query uses invalid filtered fetch-join', $error->getMessage());
-        $this->assertSame(11, $error->getLine());
-    }
-
-    /**
-     * @param string $file
-     * @return \PHPStan\Analyser\Error[]|string[]
-     */
-    private function runAnalyse(string $file): array
-    {
-        $file = $this->getFileHelper()->normalizePath($file);
-
-        /** @var Analyser $analyser */
-        $analyser = $this->getContainer()->getByType(Analyser::class);
-
-        /** @var FileHelper $fileHelper */
-        $fileHelper = $this->getContainer()->getByType(FileHelper::class);
-
-        $errors = $analyser->analyse([$file], false);
-        foreach ($errors as $error) {
-            $this->assertSame($fileHelper->normalizePath($file), $error->getFile());
-        }
-
-        return $errors;
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 11, $errors);
     }
 }
