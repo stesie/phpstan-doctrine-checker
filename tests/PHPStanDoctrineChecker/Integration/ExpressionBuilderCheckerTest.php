@@ -55,10 +55,16 @@ class ExpressionBuilderCheckerTest extends IntegrationTestCase
         $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 13, $errors);
     }
 
-    public function testExprInViolation()
+    public function testExprIn()
     {
-        $errors = $this->runAnalyse(__DIR__ . '/data/ExprInViolationTest.php');
-        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 13, $errors);
+        $queryBuilderInfo = new QueryBuilderInfo('u');
+
+        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'in', [
+            new Arg(new String_('p.type')),
+            new Arg(new Expr\Array_([new String_(':type')])),
+        ]);
+
+        $this->assertEquals(['p'], $queryBuilderInfo->getDirtyAliases());
     }
 
     /**
