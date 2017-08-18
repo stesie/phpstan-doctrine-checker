@@ -2,17 +2,14 @@
 
 namespace PHPStanDoctrineChecker\Integration;
 
-use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Query;
 use PHPStan\Analyser\Scope;
-use PHPStan\Analyser\TypeSpecifier;
-use PHPStan\Broker\Broker;
 use PHPStan\Type\ObjectType;
 use PHPStanDoctrineChecker\QueryBuilderInfo;
 use PHPStanDoctrineChecker\Service\QueryBuilderTracer;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Scalar\String_;
-use PhpParser\PrettyPrinter\Standard;
 
 class ExpressionBuilderCheckerTest extends IntegrationTestCase
 {
@@ -75,16 +72,18 @@ class ExpressionBuilderCheckerTest extends IntegrationTestCase
         array $exprMethodArgs
     )
     {
+        $basePtr = new Expr\MethodCall(
+            new Expr\Variable('queryBuilder'),
+            'expr'
+        );
+
         $methodCall = new Expr\MethodCall(
             new Expr\Variable('queryBuilder'),
             'andWhere',
             [
                 new Arg(
                     new Expr\MethodCall(
-                        new Expr\MethodCall(
-                            new Expr\Variable('queryBuilder'),
-                            'expr'
-                        ),
+                        $basePtr,
                         $exprMethodName,
                         $exprMethodArgs
                     )
@@ -92,21 +91,14 @@ class ExpressionBuilderCheckerTest extends IntegrationTestCase
             ]
         );
 
-        $prettyPrinter = new Standard();
-        $scope = new Scope(
-            $this->getContainer()->getByType(Broker::class),
-            $prettyPrinter,
-            new TypeSpecifier($prettyPrinter),
-            'some_file_name',
-            null,
-            false,
-            null,
-            null,
-            null,
-            [
-                'queryBuilder' => new ObjectType(QueryBuilder::class),
-            ]
-        );
+        $scope = $this->getMockBuilder(Scope::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $scope
+            ->method('getType')
+            ->with($this->equalTo($basePtr))
+            ->willReturn(new ObjectType(Query\Expr::class));
 
         (new QueryBuilderTracer())->processNode($queryBuilderInfo, $methodCall, $scope);
     }
