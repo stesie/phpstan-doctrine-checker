@@ -15,8 +15,9 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
 {
     /**
      * @dataProvider comparisonFunctionNameProvider
+     * @param string $functionName
      */
-    public function testExprComparison($functionName)
+    public function testExprComparison(string $functionName)
     {
         $queryBuilderInfo = new QueryBuilderInfo('u');
 
@@ -28,7 +29,10 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
         $this->assertEquals(['p'], $queryBuilderInfo->getDirtyAliases());
     }
 
-    public function comparisonFunctionNameProvider()
+    /**
+     * @return string[][]
+     */
+    public function comparisonFunctionNameProvider(): array
     {
         return [
             ['eq'],
