@@ -153,52 +153,6 @@ class QueryBuilderTracer
         }
     }
 
-    /**
-     * @param Arg[] $args
-     * @param QueryBuilderInfo $queryBuilderInfo
-     */
-    private function processExprIsNull(array $args, QueryBuilderInfo $queryBuilderInfo)
-    {
-        if (count($args) !== 1) {
-            throw new NotImplementedException('Handle Parse Error: only one arg expected');
-        }
-
-        $arg = reset($args);
-
-        if (!$arg->value instanceof String_) {
-            throw new NotImplementedException('expr()->isNull Arguments !== String_ not handled yet');
-        }
-
-        if (!preg_match('/^(\S+?)(?:\.\S+)?$/', $arg->value->value, $matches)) {
-            throw new NotImplementedException('Parse error: field spec not understood: ' . $arg->value->value);
-        }
-
-        $queryBuilderInfo->addDirtyAlias($matches[1]);
-    }
-
-    /**
-     * @param Arg[] $args
-     * @param QueryBuilderInfo $queryBuilderInfo
-     */
-    private function processExprIn(array $args, QueryBuilderInfo $queryBuilderInfo)
-    {
-        if (count($args) !== 2) {
-            throw new NotImplementedException('Handle Parse Error: two args expected');
-        }
-
-        $arg = reset($args);
-
-        if (!$arg->value instanceof String_) {
-            throw new NotImplementedException('expr()->in Argument(0) !== String_ not handled yet');
-        }
-
-        if (!preg_match('/^(\S+?)(?:\.\S+)?$/', $arg->value->value, $matches)) {
-            throw new NotImplementedException('Parse error: field spec not understood: ' . $arg->value->value);
-        }
-
-        $queryBuilderInfo->addDirtyAlias($matches[1]);
-    }
-
     private function processWhereExpression(MethodCall $whereArg, QueryBuilderInfo $queryBuilderInfo, Scope $scope)
     {
         switch ($whereArg->name) {
@@ -212,6 +166,7 @@ class QueryBuilderTracer
                 return;
 
             case 'avg':
+            case 'isNull':
                 $this->processExactNumExpressions(1, $whereArg->args, $queryBuilderInfo, $scope);
                 return;
 
@@ -230,12 +185,8 @@ class QueryBuilderTracer
                 }
                 return;
 
-            case 'isNull':
-                $this->processExprIsNull($whereArg->args, $queryBuilderInfo);
-                return;
-
             case 'in':
-                $this->processExprIn($whereArg->args, $queryBuilderInfo);
+                $this->processExpression($whereArg->args[0]->value, $queryBuilderInfo, $scope);
                 return;
         }
 
