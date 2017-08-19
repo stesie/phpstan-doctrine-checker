@@ -13,16 +13,31 @@ use PhpParser\Node\Scalar\String_;
 
 class QueryBuilderTracerExpressionBuilderTest extends TestCase
 {
-    public function testExprEq()
+    /**
+     * @dataProvider comparisonFunctionNameProvider
+     */
+    public function testExprComparison($functionName)
     {
         $queryBuilderInfo = new QueryBuilderInfo('u');
 
-        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'eq', [
+        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, $functionName, [
             new Arg(new String_('p.type')),
             new Arg(new String_(':type')),
         ]);
 
         $this->assertEquals(['p'], $queryBuilderInfo->getDirtyAliases());
+    }
+
+    public function comparisonFunctionNameProvider()
+    {
+        return [
+            ['eq'],
+            ['neq'],
+            ['lt'],
+            ['lte'],
+            ['gt'],
+            ['gte'],
+        ];
     }
 
     public function testExprEqWithoutFieldName()
@@ -37,18 +52,28 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
         $this->assertEquals(['x'], $queryBuilderInfo->getDirtyAliases());
     }
 
-    public function testExprLte()
+    public function testExprAndX()
     {
         $queryBuilderInfo = new QueryBuilderInfo('u');
 
-        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'lte', [
-            new Arg(new String_('info.age')),
-            new Arg(new String_(':age')),
+        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'andX', [
+            new Arg(
+                new Expr\MethodCall(
+                    new Expr\MethodCall(
+                        new Expr\Variable('queryBuilder'),
+                        'expr'
+                    ),
+                    'eq',
+                    [
+                        new Arg(new String_('xyz.type')),
+                        new Arg(new String_(':type')),
+                    ]
+                )
+            ),
         ]);
 
-        $this->assertEquals(['info'], $queryBuilderInfo->getDirtyAliases());
+        $this->assertEquals(['xyz'], $queryBuilderInfo->getDirtyAliases());
     }
-
     public function testExprOrX()
     {
         $queryBuilderInfo = new QueryBuilderInfo('u');

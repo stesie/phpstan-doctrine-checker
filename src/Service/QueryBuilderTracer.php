@@ -177,10 +177,15 @@ class QueryBuilderTracer
     {
         switch ($whereArg->name) {
             case 'eq':
+            case 'neq':
+            case 'lt':
             case 'lte':
+            case 'gt':
+            case 'gte':
                 $this->processExprCondition($whereArg->args, $queryBuilderInfo);
                 return;
 
+            case 'andX':
             case 'orX':
                 foreach ($whereArg->args as $arg) {
                     if (!$arg instanceof Arg) {
@@ -204,6 +209,6 @@ class QueryBuilderTracer
                 return;
         }
 
-        throw new \LogicException('unhandled Where $qb->expr()->...');
+        throw new \LogicException('unhandled Where $qb->expr()->...: ' . $whereArg->name);
     }
 }
