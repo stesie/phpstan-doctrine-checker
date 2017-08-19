@@ -162,11 +162,25 @@ class QueryBuilderTracer
             case 'lte':
             case 'gt':
             case 'gte':
+            case 'prod':
+            case 'diff':
+            case 'sum':
+            case 'quot':
+            case 'like':
+            case 'notLike':
                 $this->processExactNumExpressions(2, $whereArg->args, $queryBuilderInfo, $scope);
                 return;
 
             case 'avg':
+            case 'min':
+            case 'max':
+            case 'count':
+            case 'countDistinct':
+            case 'not':
             case 'isNull':
+            case 'isNotNull':
+            case 'abs':
+            case 'sqrt':
                 $this->processExactNumExpressions(1, $whereArg->args, $queryBuilderInfo, $scope);
                 return;
 
@@ -186,6 +200,7 @@ class QueryBuilderTracer
                 return;
 
             case 'in':
+            case 'notIn':
                 $this->processExpression($whereArg->args[0]->value, $queryBuilderInfo, $scope);
                 return;
         }

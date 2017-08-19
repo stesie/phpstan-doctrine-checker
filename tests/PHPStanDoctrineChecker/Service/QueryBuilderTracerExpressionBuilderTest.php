@@ -41,6 +41,8 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
             ['lte'],
             ['gt'],
             ['gte'],
+            ['like'],
+            ['notLike'],
         ];
     }
 
@@ -78,6 +80,7 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
 
         $this->assertEquals(['xyz'], $queryBuilderInfo->getDirtyAliases());
     }
+
     public function testExprOrX()
     {
         $queryBuilderInfo = new QueryBuilderInfo('u');
@@ -101,15 +104,31 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
         $this->assertEquals(['xyz'], $queryBuilderInfo->getDirtyAliases());
     }
 
-    public function testExprIsNull()
+    /**
+     * @dataProvider logicalFunctionNameProvider
+     * @param string $functionName
+     */
+    public function testExprLogicalFunction(string $functionName)
     {
         $queryBuilderInfo = new QueryBuilderInfo('u');
 
-        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'isNull', [
-            new Arg(new String_('info.age')),
+        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, $functionName, [
+            new Arg(new String_('info.someFlag')),
         ]);
 
         $this->assertEquals(['info'], $queryBuilderInfo->getDirtyAliases());
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function logicalFunctionNameProvider(): array
+    {
+        return [
+            ['not'],
+            ['isNull'],
+            ['isNotNull'],
+        ];
     }
 
     public function testExprIsNullWithoutFieldName()
@@ -147,7 +166,23 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
         $this->assertEquals(['p'], $queryBuilderInfo->getDirtyAliases());
     }
 
-    public function testExprAvg()
+    public function testExprNotIn()
+    {
+        $queryBuilderInfo = new QueryBuilderInfo('u');
+
+        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'notIn', [
+            new Arg(new String_('p.type')),
+            new Arg(new Expr\Array_([new Expr\ArrayItem(new String_(':type'))])),
+        ]);
+
+        $this->assertEquals(['p'], $queryBuilderInfo->getDirtyAliases());
+    }
+
+    /**
+     * @dataProvider singleArgMathOrAggregationFunctionNameProvider
+     * @param string $functionName
+     */
+    public function testExprSingleArgMath(string $functionName)
     {
         $queryBuilderInfo = new QueryBuilderInfo('u');
 
@@ -158,7 +193,7 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
                         new Expr\Variable('queryBuilder'),
                         'expr'
                     ),
-                    'avg',
+                    $functionName,
                     [
                         new Arg(new String_('xyz.value')),
                     ]
@@ -168,6 +203,63 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
         ]);
 
         $this->assertEquals(['xyz'], $queryBuilderInfo->getDirtyAliases());
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function singleArgMathOrAggregationFunctionNameProvider(): array
+    {
+        return [
+            ['avg'],
+            ['min'],
+            ['max'],
+            ['count'],
+            ['countDistinct'],
+            ['abs'],
+            ['sqrt'],
+        ];
+    }
+
+    /**
+     * @dataProvider biArgMathFunctionNameProvider
+     * @param string $functionName
+     */
+    public function testExprBiArgMath(string $functionName)
+    {
+        $queryBuilderInfo = new QueryBuilderInfo('u');
+
+        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'lt', [
+            new Arg(
+                new Expr\MethodCall(
+                    new Expr\MethodCall(
+                        new Expr\Variable('queryBuilder'),
+                        'expr'
+                    ),
+                    $functionName,
+                    [
+                        new Arg(new String_('xyz.valueA')),
+                        new Arg(new String_('xyz.valueB')),
+                    ]
+                )
+            ),
+            new Arg(new String_(':some_value')),
+        ]);
+
+        $this->assertEquals(['xyz'], $queryBuilderInfo->getDirtyAliases());
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function biArgMathFunctionNameProvider(): array
+    {
+        return [
+            ['prod'],
+            ['diff'],
+            ['sum'],
+            ['quot'],
+        ];
     }
 
 
