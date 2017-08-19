@@ -143,6 +143,30 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
         $this->assertEquals(['p'], $queryBuilderInfo->getDirtyAliases());
     }
 
+    public function testExprAvg()
+    {
+        $queryBuilderInfo = new QueryBuilderInfo('u');
+
+        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'lt', [
+            new Arg(
+                new Expr\MethodCall(
+                    new Expr\MethodCall(
+                        new Expr\Variable('queryBuilder'),
+                        'expr'
+                    ),
+                    'avg',
+                    [
+                        new Arg(new String_('xyz.value')),
+                    ]
+                )
+            ),
+            new Arg(new String_(':some_value')),
+        ]);
+
+        $this->assertEquals(['xyz'], $queryBuilderInfo->getDirtyAliases());
+    }
+
+
     /**
      * @param QueryBuilderInfo $queryBuilderInfo
      * @param string $exprMethodName

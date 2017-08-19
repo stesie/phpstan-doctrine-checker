@@ -77,16 +77,7 @@ class QueryBuilderTracer
             return;
         }
 
-        if ($whereArg instanceof MethodCall) {
-            $thisPtr = $scope->getType($whereArg->var);
-
-            if ($thisPtr instanceof ObjectType && $thisPtr->getClass() === Query\Expr::class) {
-                $this->processWhereExpression($whereArg, $queryBuilderInfo, $scope);
-                return;
-            }
-        }
-
-        throw new \LogicException('not yet implemented');
+        $this->processExpression($whereArg, $queryBuilderInfo, $scope);
     }
 
     /**
@@ -106,26 +97,61 @@ class QueryBuilderTracer
     }
 
     /**
-     * @param Arg[] $args
+     * @param string $conditionStr
      * @param QueryBuilderInfo $queryBuilderInfo
      */
-    private function processExprCondition(array $args, QueryBuilderInfo $queryBuilderInfo)
+    public function processArithmeticExpression(string $conditionStr, QueryBuilderInfo $queryBuilderInfo)
     {
-        if (count($args) !== 2) {
-            throw new NotImplementedException('Handle Parse Error: two args expected');
-        }
+        $query = new Query(new DummyEntityManager());
+        $query->setDQL($conditionStr);
 
-        $args = array_map(function (Arg $arg): string {
-            if (!$arg->value instanceof String_) {
-                throw new NotImplementedException('expr()->eq Arguments !== String_ not handled yet');
-            }
+        $parser = new Parser($query);
+        $parser->getLexer()->moveNext();
 
-            return $arg->value->value;
-        }, $args);
-
-        $this->processConditionString(implode(' = ', $args), $queryBuilderInfo);
+        $walker = new QueryWalker($queryBuilderInfo);
+        $walker->walk($parser->ArithmeticExpression());
     }
 
+    /**
+     * @param Expr $whereArg
+     * @param QueryBuilderInfo $queryBuilderInfo
+     * @param Scope $scope
+     */
+    private function processExpression(Expr $whereArg, QueryBuilderInfo $queryBuilderInfo, Scope $scope)
+    {
+        if ($whereArg instanceof MethodCall) {
+            $thisPtr = $scope->getType($whereArg->var);
+
+            if ($thisPtr instanceof ObjectType && $thisPtr->getClass() === Query\Expr::class) {
+                $this->processWhereExpression($whereArg, $queryBuilderInfo, $scope);
+                return;
+            }
+        }
+
+        if ($whereArg instanceof String_) {
+            $this->processArithmeticExpression($whereArg->value, $queryBuilderInfo);
+            return;
+        }
+
+        throw new \LogicException('not yet implemented');
+    }
+
+    /**
+     * @param int $num
+     * @param Arg[] $args
+     * @param QueryBuilderInfo $queryBuilderInfo
+     * @param Scope $scope
+     */
+    private function processExactNumExpressions(int $num, array $args, QueryBuilderInfo $queryBuilderInfo, Scope $scope)
+    {
+        if (count($args) !== $num) {
+            throw new NotImplementedException('Handle Parse Error: wrong number of arguments');
+        }
+
+        foreach ($args as $arg) {
+            $this->processExpression($arg->value, $queryBuilderInfo, $scope);
+        }
+    }
 
     /**
      * @param Arg[] $args
@@ -182,7 +208,11 @@ class QueryBuilderTracer
             case 'lte':
             case 'gt':
             case 'gte':
-                $this->processExprCondition($whereArg->args, $queryBuilderInfo);
+                $this->processExactNumExpressions(2, $whereArg->args, $queryBuilderInfo, $scope);
+                return;
+
+            case 'avg':
+                $this->processExactNumExpressions(1, $whereArg->args, $queryBuilderInfo, $scope);
                 return;
 
             case 'andX':
