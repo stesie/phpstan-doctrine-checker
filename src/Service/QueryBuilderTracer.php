@@ -26,7 +26,13 @@ class QueryBuilderTracer
                 $queryBuilderInfo->resetSelect();
                 /* fall through */
             case 'addSelect':
-                foreach ($node->args as $arg) {
+                if (count($node->args) >= 1 && $node->args[0]->value instanceof Expr\Array_) {
+                    $args = $node->args[0]->value->items;
+                } else {
+                    $args = $node->args;
+                }
+
+                foreach ($args as $arg) {
                     if (!$arg->value instanceof Scalar\String_) {
                         throw new \LogicException('not yet implemented');
                     }
