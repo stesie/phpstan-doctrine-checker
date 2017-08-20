@@ -12,8 +12,9 @@ use PHPStanDoctrineChecker\Service\QueryBuilderTracer\DummyEntityManager;
 use PHPStanDoctrineChecker\Service\QueryBuilderTracer\QueryWalker;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Scalar;
 
 class QueryBuilderTracer
 {
@@ -26,7 +27,7 @@ class QueryBuilderTracer
                 /* fall through */
             case 'addSelect':
                 foreach ($node->args as $arg) {
-                    if (!$arg->value instanceof String_) {
+                    if (!$arg->value instanceof Scalar\String_) {
                         throw new \LogicException('not yet implemented');
                     }
 
@@ -72,7 +73,11 @@ class QueryBuilderTracer
      */
     private function processWherePart(Expr $whereArg, QueryBuilderInfo $queryBuilderInfo, Scope $scope)
     {
-        if ($whereArg instanceof String_) {
+        if ($whereArg instanceof Cast\String_) {
+            $whereArg = $whereArg->expr;
+        }
+
+        if ($whereArg instanceof Scalar\String_) {
             $this->processConditionString($whereArg->value, $queryBuilderInfo);
             return;
         }
@@ -128,7 +133,7 @@ class QueryBuilderTracer
             }
         }
 
-        if ($whereArg instanceof String_) {
+        if ($whereArg instanceof Scalar\String_) {
             $this->processArithmeticExpression($whereArg->value, $queryBuilderInfo);
             return;
         }
