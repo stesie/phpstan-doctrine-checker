@@ -13,11 +13,24 @@ class QueryBuilderObjectType extends ObjectType
      */
     private $queryBuilderInfo;
 
-    public function __construct(string $alias)
+    /**
+     * @param string $class
+     * @param QueryBuilderInfo $queryBuilderInfo
+     */
+    public function __construct(string $class, QueryBuilderInfo $queryBuilderInfo)
     {
-        parent::__construct(QueryBuilder::class);
+        parent::__construct($class);
 
-        $this->queryBuilderInfo = new QueryBuilderInfo($alias);
+        $this->queryBuilderInfo = $queryBuilderInfo;
+    }
+
+    /**
+     * @param string $alias
+     * @return QueryBuilderObjectType
+     */
+    public static function create(string $alias): self
+    {
+        return new static(QueryBuilder::class, new QueryBuilderInfo($alias));
     }
 
     /**
@@ -26,5 +39,14 @@ class QueryBuilderObjectType extends ObjectType
     public function getQueryBuilderInfo(): QueryBuilderInfo
     {
         return $this->queryBuilderInfo;
+    }
+
+    /**
+     * @param string $class
+     * @return QueryBuilderObjectType
+     */
+    public function withClass(string $class): self
+    {
+        return new static($class, $this->getQueryBuilderInfo());
     }
 }

@@ -11,7 +11,6 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStanDoctrineChecker\Service\QueryBuilderTracer;
 use PHPStanDoctrineChecker\Type\QueryBuilderObjectType;
-use PHPStanDoctrineChecker\Type\QueryObjectType;
 use PhpParser\Node\Expr\MethodCall;
 
 class QueryBuilderReturnTypeExtension implements DynamicMethodReturnTypeExtension
@@ -33,7 +32,7 @@ class QueryBuilderReturnTypeExtension implements DynamicMethodReturnTypeExtensio
 
     public function isMethodSupported(MethodReflection $methodReflection): bool
     {
-        return true; // $methodReflection->getName() === 'select';
+        return true;
     }
 
     public function getTypeFromMethodCall(MethodReflection $methodReflection, MethodCall $methodCall, Scope $scope): Type
@@ -60,8 +59,7 @@ class QueryBuilderReturnTypeExtension implements DynamicMethodReturnTypeExtensio
         }
 
         if ($returnType->getClass() === Query::class) {
-            return new QueryObjectType($calleeType->getQueryBuilderInfo());
-
+            return $calleeType->withClass(Query::class);
         }
 
         // whatever ...

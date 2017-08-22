@@ -69,6 +69,14 @@ class QueryBuilderTracer
             case 'distinct':
                 /* do nothing, those neither select nor filter data */
                 break;
+
+            case 'expr':
+                /* ignore here, creates new trace and possibly merges via other call */
+                break;
+
+            case 'getQuery':
+                /* everything should be traced already, nothing left to do :-) */
+                break;
         }
     }
 

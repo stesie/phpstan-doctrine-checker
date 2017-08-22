@@ -31,6 +31,6 @@ class EntityRepositoryReturnTypeExtension implements DynamicMethodReturnTypeExte
             throw new \LogicException('not yet implemented');
         }
 
-        return new QueryBuilderObjectType($aliasArg->value);
+        return QueryBuilderObjectType::create($aliasArg->value);
     }
 }

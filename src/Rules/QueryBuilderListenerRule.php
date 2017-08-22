@@ -2,6 +2,7 @@
 
 namespace PHPStanDoctrineChecker\Rules;
 
+use Doctrine\ORM\QueryBuilder;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 use PHPStanDoctrineChecker\Service\QueryBuilderTracer;
@@ -42,7 +43,7 @@ class QueryBuilderListenerRule implements Rule
 
         $calleeType = $scope->getType($node->var);
 
-        if (!$calleeType instanceof QueryBuilderObjectType) {
+        if (!$calleeType instanceof QueryBuilderObjectType || $calleeType->getClass() !== QueryBuilder::class) {
             return [];
         }
 

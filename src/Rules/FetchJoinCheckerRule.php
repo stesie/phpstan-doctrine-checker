@@ -4,7 +4,7 @@ namespace PHPStanDoctrineChecker\Rules;
 
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
-use PHPStanDoctrineChecker\Type\QueryObjectType;
+use PHPStanDoctrineChecker\Type\QueryBuilderObjectType;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 
@@ -35,7 +35,7 @@ class FetchJoinCheckerRule implements Rule
 
         $calleeType = $scope->getType($node->var);
 
-        if (!$calleeType instanceof QueryObjectType) {
+        if (!$calleeType instanceof QueryBuilderObjectType) {
             return [];
         }
 
