@@ -6,7 +6,7 @@ use Doctrine\ORM\QueryBuilder;
 use PHPStan\Type\ObjectType;
 use PHPStanDoctrineChecker\QueryBuilderInfo;
 
-class QueryBuilderObjectType extends ObjectType
+class QueryBuilderObjectType extends ObjectType implements QueryBuilderInfoOwningType
 {
     /**
      * @var QueryBuilderInfo

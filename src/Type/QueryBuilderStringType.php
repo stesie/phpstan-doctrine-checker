@@ -5,7 +5,7 @@ namespace PHPStanDoctrineChecker\Type;
 use PHPStan\Type\StringType;
 use PHPStanDoctrineChecker\QueryBuilderInfo;
 
-class QueryBuilderStringType extends StringType
+class QueryBuilderStringType extends StringType implements QueryBuilderInfoOwningType
 {
     /**
      * @var QueryBuilderInfo

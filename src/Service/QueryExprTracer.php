@@ -10,7 +10,7 @@ use PHPStanDoctrineChecker\Exceptions\NotImplementedException;
 use PHPStanDoctrineChecker\QueryBuilderInfo;
 use PHPStanDoctrineChecker\Service\QueryBuilderTracer\DummyEntityManager;
 use PHPStanDoctrineChecker\Service\QueryBuilderTracer\QueryWalker;
-use PHPStanDoctrineChecker\Type\QueryBuilderObjectType;
+use PHPStanDoctrineChecker\Type\QueryBuilderInfoOwningType;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Cast;
@@ -170,7 +170,7 @@ class QueryExprTracer
         if ($whereArg instanceof Expr\Variable) {
             $variableType = $scope->getType($whereArg);
 
-            if ($variableType instanceof QueryBuilderObjectType) {
+            if ($variableType instanceof QueryBuilderInfoOwningType) {
                 $queryBuilderInfo->merge($variableType->getQueryBuilderInfo());
                 return;
             }
