@@ -7,9 +7,11 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStanDoctrineChecker\Service\QueryExprTracer;
 use PHPStanDoctrineChecker\Type\QueryBuilderObjectType;
+use PHPStanDoctrineChecker\Type\QueryBuilderStringType;
 use PhpParser\Node\Expr\MethodCall;
 
 class QueryExprReturnTypeExtension implements DynamicMethodReturnTypeExtension
@@ -44,12 +46,18 @@ class QueryExprReturnTypeExtension implements DynamicMethodReturnTypeExtension
             return $returnType;
         }
 
-        if (!$returnType instanceof ObjectType) {
-            throw new \LogicException('return type of Expr::class not ObjectType');
+        if (!$returnType instanceof ObjectType && !$returnType instanceof StringType) {
+            throw new \LogicException('return type of Expr::class neither ObjectType nor StringType');
         }
 
         $this->queryExprTracer->processExprMethodCall($calleeType->getQueryBuilderInfo(), $methodCall, $scope);
 
-        return $calleeType->withClass($returnType->getClass());
+        if ($returnType instanceof ObjectType) {
+            return $calleeType->withClass($returnType->getClass());
+        } elseif ($returnType instanceof StringType) {
+            return new QueryBuilderStringType($calleeType->getQueryBuilderInfo());
+        } else {
+            throw new \LogicException('not reachable');
+        }
     }
 }
