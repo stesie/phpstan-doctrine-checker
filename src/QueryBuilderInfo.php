@@ -7,7 +7,7 @@ class QueryBuilderInfo
     /**
      * @var string[]
      */
-    private $rootAliases;
+    private $rootAliases = [];
 
     /**
      * @var string[]
@@ -24,9 +24,11 @@ class QueryBuilderInfo
      */
     private $isRangeFiltered = false;
 
-    public function __construct(string $alias)
+    public function __construct(string $alias = null)
     {
-        $this->rootAliases = [$alias];
+        if ($alias !== null) {
+            $this->rootAliases[] = $alias;
+        }
     }
 
     public function resetSelect()
@@ -81,5 +83,12 @@ class QueryBuilderInfo
     public function setIsRangeFiltered(bool $isRangeFiltered)
     {
         $this->isRangeFiltered = $isRangeFiltered;
+    }
+
+    public function merge(QueryBuilderInfo $queryBuilderInfo)
+    {
+        $this->rootAliases = array_unique(array_merge($queryBuilderInfo->rootAliases, $this->rootAliases));
+        $this->selects = array_unique(array_merge($queryBuilderInfo->selects, $this->selects));
+        $this->dirty = array_unique(array_merge($queryBuilderInfo->dirty, $this->dirty));
     }
 }

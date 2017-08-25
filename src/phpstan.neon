@@ -8,6 +8,10 @@ services:
 		tags:
 			- phpstan.broker.dynamicMethodReturnTypeExtension
 	-
+		class: PHPStanDoctrineChecker\Reflection\QueryExprReturnTypeExtension
+		tags:
+			- phpstan.broker.dynamicMethodReturnTypeExtension
+	-
 		class: PHPStanDoctrineChecker\Rules\FetchJoinCheckerRule
 		tags:
 			- phpstan.rules.rule
@@ -17,3 +21,5 @@ services:
 			- phpstan.rules.rule
 	-
 		class: PHPStanDoctrineChecker\Service\QueryBuilderTracer
+	-
+		class: PHPStanDoctrineChecker\Service\QueryExprTracer

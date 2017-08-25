@@ -302,6 +302,6 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
             ->with($this->equalTo($basePtr))
             ->willReturn(new ObjectType(Query\Expr::class));
 
-        (new QueryBuilderTracer())->processNode($queryBuilderInfo, $methodCall, $scope);
+        (new QueryBuilderTracer(new QueryExprTracer()))->processNode($queryBuilderInfo, $methodCall, $scope);
     }
 }

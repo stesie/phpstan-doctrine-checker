@@ -9,6 +9,7 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use PHPStanDoctrineChecker\QueryBuilderInfo;
 use PHPStanDoctrineChecker\Service\QueryBuilderTracer;
 use PHPStanDoctrineChecker\Type\QueryBuilderObjectType;
 use PhpParser\Node\Expr\MethodCall;
@@ -18,11 +19,11 @@ class QueryBuilderReturnTypeExtension implements DynamicMethodReturnTypeExtensio
     /**
      * @var QueryBuilderTracer
      */
-    private $queryBuilderListener;
+    private $queryBuilderTracer;
 
     public function __construct(QueryBuilderTracer $queryBuilderListener)
     {
-        $this->queryBuilderListener = $queryBuilderListener;
+        $this->queryBuilderTracer = $queryBuilderListener;
     }
 
     public static function getClass(): string
@@ -52,7 +53,7 @@ class QueryBuilderReturnTypeExtension implements DynamicMethodReturnTypeExtensio
 
         if ($returnType->getClass() === QueryBuilder::class) {
             // tell node processor
-            $this->queryBuilderListener->processNode($calleeType->getQueryBuilderInfo(), $methodCall, $scope);
+            $this->queryBuilderTracer->processNode($calleeType->getQueryBuilderInfo(), $methodCall, $scope);
 
             // pass on fluency
             return $calleeType;
@@ -60,6 +61,10 @@ class QueryBuilderReturnTypeExtension implements DynamicMethodReturnTypeExtensio
 
         if ($returnType->getClass() === Query::class) {
             return $calleeType->withClass(Query::class);
+        }
+
+        if ($methodCall->name === 'expr') {
+            return new QueryBuilderObjectType(Query\Expr::class, new QueryBuilderInfo());
         }
 
         // whatever ...

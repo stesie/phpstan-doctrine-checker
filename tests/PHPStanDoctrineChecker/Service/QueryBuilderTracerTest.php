@@ -10,7 +10,7 @@ class QueryBuilderTracerTest extends TestCase
     public function testComparisonOfLiteralBooleans()
     {
         $qbInfo = new QueryBuilderInfo('x');
-        (new QueryBuilderTracer())->processConditionString('true = true', $qbInfo);
+        (new QueryExprTracer())->processConditionString('true = true', $qbInfo);
 
         $this->assertEmpty($qbInfo->getDirtyAliases());
     }
@@ -18,7 +18,7 @@ class QueryBuilderTracerTest extends TestCase
     public function testComparisonOfLiteralNumbers()
     {
         $qbInfo = new QueryBuilderInfo('x');
-        (new QueryBuilderTracer())->processConditionString('23 != 42', $qbInfo);
+        (new QueryExprTracer())->processConditionString('23 != 42', $qbInfo);
 
         $this->assertEmpty($qbInfo->getDirtyAliases());
     }
@@ -26,7 +26,7 @@ class QueryBuilderTracerTest extends TestCase
     public function testComparisonOfFieldWithLiteralString()
     {
         $qbInfo = new QueryBuilderInfo('x');
-        (new QueryBuilderTracer())->processConditionString('u.name = \'Rolf\'', $qbInfo);
+        (new QueryExprTracer())->processConditionString('u.name = \'Rolf\'', $qbInfo);
 
         $this->assertSame(['u'], $qbInfo->getDirtyAliases());
     }
@@ -34,7 +34,7 @@ class QueryBuilderTracerTest extends TestCase
     public function testComparisonOfFieldWithLiteralStringYodaStyle()
     {
         $qbInfo = new QueryBuilderInfo('x');
-        (new QueryBuilderTracer())->processConditionString('\'Rolf\' = u.name', $qbInfo);
+        (new QueryExprTracer())->processConditionString('\'Rolf\' = u.name', $qbInfo);
 
         $this->assertSame(['u'], $qbInfo->getDirtyAliases());
     }
@@ -42,7 +42,7 @@ class QueryBuilderTracerTest extends TestCase
     public function testComparisonOfSameFieldWithItself()
     {
         $qbInfo = new QueryBuilderInfo('x');
-        (new QueryBuilderTracer())->processConditionString('u.name = u.name', $qbInfo);
+        (new QueryExprTracer())->processConditionString('u.name = u.name', $qbInfo);
 
         $this->assertSame(['u'], $qbInfo->getDirtyAliases());
     }
@@ -50,7 +50,7 @@ class QueryBuilderTracerTest extends TestCase
     public function testComparisonOfTwoFields()
     {
         $qbInfo = new QueryBuilderInfo('x');
-        (new QueryBuilderTracer())->processConditionString('u1.name = u2.name', $qbInfo);
+        (new QueryExprTracer())->processConditionString('u1.name = u2.name', $qbInfo);
 
         $this->assertSame(['u1', 'u2'], $qbInfo->getDirtyAliases());
     }
@@ -58,7 +58,7 @@ class QueryBuilderTracerTest extends TestCase
     public function testComparisonOfFieldWithParameter()
     {
         $qbInfo = new QueryBuilderInfo('x');
-        (new QueryBuilderTracer())->processConditionString('u.name = :name', $qbInfo);
+        (new QueryExprTracer())->processConditionString('u.name = :name', $qbInfo);
 
         $this->assertSame(['u'], $qbInfo->getDirtyAliases());
     }
@@ -66,7 +66,7 @@ class QueryBuilderTracerTest extends TestCase
     public function testComparisonWithAnd()
     {
         $qbInfo = new QueryBuilderInfo('x');
-        (new QueryBuilderTracer())->processConditionString('u.name = \'Rolf\' AND p.type = \'work\'', $qbInfo);
+        (new QueryExprTracer())->processConditionString('u.name = \'Rolf\' AND p.type = \'work\'', $qbInfo);
 
         $this->assertSame(['u', 'p'], $qbInfo->getDirtyAliases());
     }
@@ -74,7 +74,7 @@ class QueryBuilderTracerTest extends TestCase
     public function testComparisonWithMultipleAnd()
     {
         $qbInfo = new QueryBuilderInfo('x');
-        (new QueryBuilderTracer())->processConditionString(
+        (new QueryExprTracer())->processConditionString(
             'u.name = \'Rolf\' AND p.type = \'work\' AND 1 = 2 AND 1 = 2 AND 1 = 2',
             $qbInfo
         );
@@ -85,7 +85,7 @@ class QueryBuilderTracerTest extends TestCase
     public function testComparisonWithOr()
     {
         $qbInfo = new QueryBuilderInfo('x');
-        (new QueryBuilderTracer())->processConditionString('u.name = \'Rolf\' OR p.type = \'work\'', $qbInfo);
+        (new QueryExprTracer())->processConditionString('u.name = \'Rolf\' OR p.type = \'work\'', $qbInfo);
 
         $this->assertSame(['u', 'p'], $qbInfo->getDirtyAliases());
     }
@@ -93,7 +93,7 @@ class QueryBuilderTracerTest extends TestCase
     public function testComparisonWithMultipleOr()
     {
         $qbInfo = new QueryBuilderInfo('x');
-        (new QueryBuilderTracer())->processConditionString(
+        (new QueryExprTracer())->processConditionString(
             'u.name = \'Rolf\' OR p.type = \'work\' OR 1 = 2 OR 1 = 2 OR 1 = 2',
             $qbInfo
         );
@@ -104,7 +104,7 @@ class QueryBuilderTracerTest extends TestCase
     public function testComparisonWithNot()
     {
         $qbInfo = new QueryBuilderInfo('x');
-        (new QueryBuilderTracer())->processConditionString('NOT u.name = \'Rolf\'', $qbInfo);
+        (new QueryExprTracer())->processConditionString('NOT u.name = \'Rolf\'', $qbInfo);
 
         $this->assertSame(['u'], $qbInfo->getDirtyAliases());
     }
@@ -112,7 +112,7 @@ class QueryBuilderTracerTest extends TestCase
     public function testConditionalExpressionWithinPrimary()
     {
         $qbInfo = new QueryBuilderInfo('x');
-        (new QueryBuilderTracer())->processConditionString('u.name = \'Rolf\' OR (1 = 2 AND p.type = \'work\')', $qbInfo);
+        (new QueryExprTracer())->processConditionString('u.name = \'Rolf\' OR (1 = 2 AND p.type = \'work\')', $qbInfo);
 
         $this->assertSame(['u', 'p'], $qbInfo->getDirtyAliases());
     }
@@ -120,7 +120,7 @@ class QueryBuilderTracerTest extends TestCase
     public function testBetween()
     {
         $qbInfo = new QueryBuilderInfo('x');
-        (new QueryBuilderTracer())->processConditionString('u.age BETWEEN 23 AND 42', $qbInfo);
+        (new QueryExprTracer())->processConditionString('u.age BETWEEN 23 AND 42', $qbInfo);
 
         $this->assertSame(['u'], $qbInfo->getDirtyAliases());
     }
@@ -128,7 +128,7 @@ class QueryBuilderTracerTest extends TestCase
     public function testLike()
     {
         $qbInfo = new QueryBuilderInfo('x');
-        (new QueryBuilderTracer())->processConditionString('u.name LIKE \'x%\'', $qbInfo);
+        (new QueryExprTracer())->processConditionString('u.name LIKE \'x%\'', $qbInfo);
 
         $this->assertSame(['u'], $qbInfo->getDirtyAliases());
     }
@@ -136,7 +136,7 @@ class QueryBuilderTracerTest extends TestCase
     public function testIn()
     {
         $qbInfo = new QueryBuilderInfo('x');
-        (new QueryBuilderTracer())->processConditionString('u.name IN (\'x%\')', $qbInfo);
+        (new QueryExprTracer())->processConditionString('u.name IN (\'x%\')', $qbInfo);
 
         $this->assertSame(['u'], $qbInfo->getDirtyAliases());
     }
@@ -144,7 +144,7 @@ class QueryBuilderTracerTest extends TestCase
     public function testParameterIsNull()
     {
         $qbInfo = new QueryBuilderInfo('x');
-        (new QueryBuilderTracer())->processConditionString(':foo IS NULL', $qbInfo);
+        (new QueryExprTracer())->processConditionString(':foo IS NULL', $qbInfo);
 
         $this->assertSame([], $qbInfo->getDirtyAliases());
     }
@@ -152,7 +152,7 @@ class QueryBuilderTracerTest extends TestCase
     public function testFieldIsNull()
     {
         $qbInfo = new QueryBuilderInfo('x');
-        (new QueryBuilderTracer())->processConditionString('u.name IS NOT NULL', $qbInfo);
+        (new QueryExprTracer())->processConditionString('u.name IS NOT NULL', $qbInfo);
 
         $this->assertSame(['u'], $qbInfo->getDirtyAliases());
     }
