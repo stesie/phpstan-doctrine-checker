@@ -11,7 +11,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Scalar\String_;
 
-class QueryBuilderTracerExpressionBuilderTest extends TestCase
+class QueryExprTracerExpressionBuilderTest extends TestCase
 {
     /**
      * @dataProvider comparisonFunctionNameProvider
@@ -21,7 +21,7 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
     {
         $queryBuilderInfo = new QueryBuilderInfo('u');
 
-        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, $functionName, [
+        $this->callExprMethod($queryBuilderInfo, $functionName, [
             new Arg(new String_('p.type')),
             new Arg(new String_(':type')),
         ]);
@@ -50,7 +50,7 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
     {
         $queryBuilderInfo = new QueryBuilderInfo('u');
 
-        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'eq', [
+        $this->callExprMethod($queryBuilderInfo, 'eq', [
             new Arg(new String_('x')),
             new Arg(new String_(':phoneNumber')),
         ]);
@@ -62,7 +62,7 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
     {
         $queryBuilderInfo = new QueryBuilderInfo('u');
 
-        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'andX', [
+        $this->callExprMethod($queryBuilderInfo, 'andX', [
             new Arg(
                 new Expr\MethodCall(
                     new Expr\MethodCall(
@@ -85,7 +85,7 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
     {
         $queryBuilderInfo = new QueryBuilderInfo('u');
 
-        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'orX', [
+        $this->callExprMethod($queryBuilderInfo, 'orX', [
             new Arg(
                 new Expr\MethodCall(
                     new Expr\MethodCall(
@@ -112,7 +112,7 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
     {
         $queryBuilderInfo = new QueryBuilderInfo('u');
 
-        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, $functionName, [
+        $this->callExprMethod($queryBuilderInfo, $functionName, [
             new Arg(new String_('info.someFlag')),
         ]);
 
@@ -135,7 +135,7 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
     {
         $queryBuilderInfo = new QueryBuilderInfo('u');
 
-        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'isNull', [
+        $this->callExprMethod($queryBuilderInfo, 'isNull', [
             new Arg(new String_('info')),
         ]);
 
@@ -146,7 +146,7 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
     {
         $queryBuilderInfo = new QueryBuilderInfo('u');
 
-        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'in', [
+        $this->callExprMethod($queryBuilderInfo, 'in', [
             new Arg(new String_('p.type')),
             new Arg(new Expr\Array_([new Expr\ArrayItem(new String_(':type'))])),
         ]);
@@ -158,7 +158,7 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
     {
         $queryBuilderInfo = new QueryBuilderInfo('u');
 
-        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'in', [
+        $this->callExprMethod($queryBuilderInfo, 'in', [
             new Arg(new String_('p')),
             new Arg(new Expr\Array_([new Expr\ArrayItem(new String_(':phoneNumber'))])),
         ]);
@@ -170,7 +170,7 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
     {
         $queryBuilderInfo = new QueryBuilderInfo('u');
 
-        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'notIn', [
+        $this->callExprMethod($queryBuilderInfo, 'notIn', [
             new Arg(new String_('p.type')),
             new Arg(new Expr\Array_([new Expr\ArrayItem(new String_(':type'))])),
         ]);
@@ -186,7 +186,7 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
     {
         $queryBuilderInfo = new QueryBuilderInfo('u');
 
-        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'lt', [
+        $this->callExprMethod($queryBuilderInfo, 'lt', [
             new Arg(
                 new Expr\MethodCall(
                     new Expr\MethodCall(
@@ -229,7 +229,7 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
     {
         $queryBuilderInfo = new QueryBuilderInfo('u');
 
-        $this->runAndWhereWithExpressionBuilder($queryBuilderInfo, 'lt', [
+        $this->callExprMethod($queryBuilderInfo, 'lt', [
             new Arg(
                 new Expr\MethodCall(
                     new Expr\MethodCall(
@@ -268,30 +268,14 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
      * @param string $exprMethodName
      * @param Arg[] $exprMethodArgs
      */
-    protected function runAndWhereWithExpressionBuilder(
+    protected function callExprMethod(
         QueryBuilderInfo $queryBuilderInfo,
         string $exprMethodName,
         array $exprMethodArgs
     )
     {
-        $basePtr = new Expr\MethodCall(
-            new Expr\Variable('queryBuilder'),
-            'expr'
-        );
-
-        $methodCall = new Expr\MethodCall(
-            new Expr\Variable('queryBuilder'),
-            'andWhere',
-            [
-                new Arg(
-                    new Expr\MethodCall(
-                        $basePtr,
-                        $exprMethodName,
-                        $exprMethodArgs
-                    )
-                ),
-            ]
-        );
+        $basePtr = new Expr\MethodCall(new Expr\Variable('queryBuilder'), 'expr');
+        $methodCall = new Expr\MethodCall($basePtr, $exprMethodName, $exprMethodArgs);
 
         $scope = $this->getMockBuilder(Scope::class)
             ->disableOriginalConstructor()
@@ -302,6 +286,6 @@ class QueryBuilderTracerExpressionBuilderTest extends TestCase
             ->with($this->equalTo($basePtr))
             ->willReturn(new ObjectType(Query\Expr::class));
 
-        (new QueryBuilderTracer(new QueryExprTracer()))->processNode($queryBuilderInfo, $methodCall, $scope);
+        (new QueryExprTracer())->processExprMethodCall($queryBuilderInfo, $methodCall, $scope);
     }
 }

@@ -5,7 +5,7 @@ namespace PHPStanDoctrineChecker\Service;
 use PHPStanDoctrineChecker\QueryBuilderInfo;
 use PHPUnit\Framework\TestCase;
 
-class QueryBuilderTracerTest extends TestCase
+class QueryExprTracerConditionStringTest extends TestCase
 {
     public function testComparisonOfLiteralBooleans()
     {
