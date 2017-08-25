@@ -12,6 +12,10 @@ services:
 		tags:
 			- phpstan.broker.dynamicMethodReturnTypeExtension
 	-
+		class: PHPStanDoctrineChecker\Reflection\QueryExprComparisonReturnTypeExtension
+		tags:
+			- phpstan.broker.dynamicMethodReturnTypeExtension
+	-
 		class: PHPStanDoctrineChecker\Rules\FetchJoinCheckerRule
 		tags:
 			- phpstan.rules.rule
