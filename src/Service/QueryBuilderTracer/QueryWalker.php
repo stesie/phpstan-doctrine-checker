@@ -87,6 +87,11 @@ class QueryWalker
             return;
         }
 
+        if ($node instanceof AST\InstanceOfExpression) {
+            $this->queryBuilderInfo->addDirtyAlias($node->identificationVariable);
+            return;
+        }
+
         throw new \LogicException();
     }
 

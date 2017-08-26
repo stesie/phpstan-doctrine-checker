@@ -156,4 +156,12 @@ class QueryExprTracerConditionStringTest extends TestCase
 
         $this->assertSame(['u'], $qbInfo->getDirtyAliases());
     }
+
+    public function testInstanceOf()
+    {
+        $qbInfo = new QueryBuilderInfo('x');
+        (new QueryExprTracer())->processConditionString('u INSTANCE OF (AppBundle:User)', $qbInfo);
+
+        $this->assertSame(['u'], $qbInfo->getDirtyAliases());
+    }
 }
