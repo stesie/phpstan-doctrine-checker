@@ -161,6 +161,17 @@ class QueryExprTracer
             return;
         }
 
+        // possibly extract sub-query from '(' + $subQuery + ')' form
+        if ($whereArg instanceof Expr\BinaryOp\Concat &&
+            $whereArg->right instanceof Scalar\String_ &&
+            $whereArg->left instanceof Expr\BinaryOp\Concat &&
+            $whereArg->left->left instanceof Scalar\String_ &&
+            trim($whereArg->left->left->value) === '(' &&
+            trim($whereArg->right->value) === ')'
+        ) {
+            $whereArg = $whereArg->left->right;
+        }
+
         $whereArgType = $scope->getType($whereArg);
 
         if ($whereArgType instanceof QueryBuilderInfoOwningType) {
