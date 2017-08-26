@@ -104,7 +104,7 @@ class QueryExprTracer
      */
     private function processExactNumExpressions(int $num, array $args, QueryBuilderInfo $queryBuilderInfo, Scope $scope)
     {
-        if (count($args) !== $num) {
+        if (\count($args) !== $num) {
             throw new NotImplementedException('Handle Parse Error: wrong number of arguments');
         }
 

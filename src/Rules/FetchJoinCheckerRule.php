@@ -29,7 +29,7 @@ class FetchJoinCheckerRule implements Rule
             throw new \LogicException();
         }
 
-        if (!in_array($node->name, ['getResult', 'getSingleResult'])) {
+        if (!\in_array($node->name, ['getResult', 'getSingleResult'])) {
             return [];
         }
 

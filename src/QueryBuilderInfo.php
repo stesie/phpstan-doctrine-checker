@@ -48,7 +48,7 @@ class QueryBuilderInfo
 
     public function addDirtyAlias(string $alias)
     {
-        if (!in_array($alias, $this->dirty)) {
+        if (!\in_array($alias, $this->dirty)) {
             $this->dirty[] = $alias;
         }
     }
@@ -66,7 +66,7 @@ class QueryBuilderInfo
      */
     public function getConflictingFetches(): array
     {
-        return array_intersect(array_diff($this->selects, $this->rootAliases), $this->dirty);
+        return \array_intersect(\array_diff($this->selects, $this->rootAliases), $this->dirty);
     }
 
     /**
@@ -87,8 +87,8 @@ class QueryBuilderInfo
 
     public function merge(QueryBuilderInfo $queryBuilderInfo)
     {
-        $this->rootAliases = array_unique(array_merge($queryBuilderInfo->rootAliases, $this->rootAliases));
-        $this->selects = array_unique(array_merge($queryBuilderInfo->selects, $this->selects));
-        $this->dirty = array_unique(array_merge($queryBuilderInfo->dirty, $this->dirty));
+        $this->rootAliases = \array_unique(\array_merge($queryBuilderInfo->rootAliases, $this->rootAliases));
+        $this->selects = \array_unique(\array_merge($queryBuilderInfo->selects, $this->selects));
+        $this->dirty = \array_unique(\array_merge($queryBuilderInfo->dirty, $this->dirty));
     }
 }

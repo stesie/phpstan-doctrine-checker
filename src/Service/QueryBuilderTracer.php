@@ -28,7 +28,7 @@ class QueryBuilderTracer
                 $queryBuilderInfo->resetSelect();
                 /* fall through */
             case 'addSelect':
-                if (count($node->args) >= 1 && $node->args[0]->value instanceof Expr\Array_) {
+                if (\count($node->args) >= 1 && $node->args[0]->value instanceof Expr\Array_) {
                     $args = $node->args[0]->value->items;
                 } else {
                     $args = $node->args;
@@ -46,7 +46,7 @@ class QueryBuilderTracer
             case 'join':
             case 'innerJoin':
             case 'leftJoin':
-                if (count($node->args) >= 4) {
+                if (\count($node->args) >= 4) {
                     $this->queryExprTracer->processWherePart($node->args[3]->value, $queryBuilderInfo, $scope);
                 }
                 break;
@@ -81,7 +81,7 @@ class QueryBuilderTracer
                 break;
 
             default:
-                echo 'processNode ignored call for: ' . $node->name . PHP_EOL;
+                echo 'processNode ignored call for: ' . $node->name . \PHP_EOL;
         }
     }
 }
