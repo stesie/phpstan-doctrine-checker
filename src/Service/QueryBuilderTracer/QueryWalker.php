@@ -82,6 +82,11 @@ class QueryWalker
             return;
         }
 
+        if ($node instanceof AST\AggregateExpression) {
+            $this->walk($node->pathExpression);
+            return;
+        }
+
         if ($node instanceof AST\PathExpression) {
             $this->queryBuilderInfo->addDirtyAlias($node->identificationVariable);
             return;

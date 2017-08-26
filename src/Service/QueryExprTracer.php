@@ -150,6 +150,21 @@ class QueryExprTracer
     }
 
     /**
+     * @param string $conditionStr
+     * @param QueryBuilderInfo $queryBuilderInfo
+     */
+    public function processIdentificationVariable(string $conditionStr, QueryBuilderInfo $queryBuilderInfo)
+    {
+        $query = new Query(new DummyEntityManager());
+        $query->setDQL($conditionStr);
+
+        $parser = new Parser($query);
+        $parser->getLexer()->moveNext();
+
+        $queryBuilderInfo->addDirtyAlias($parser->IdentificationVariable());
+    }
+
+    /**
      * @param Expr $whereArg
      * @param QueryBuilderInfo $queryBuilderInfo
      * @param Scope $scope

@@ -48,11 +48,14 @@ class QueryBuilderTracer
                 }
                 break;
 
+            case 'groupBy':
+            case 'addGroupBy':
+                $this->queryExprTracer->processIdentificationVariable($node->args[0]->value->value, $queryBuilderInfo, $scope);
+                break;
+
             case 'where':
             case 'andWhere':
             case 'orWhere':
-            case 'groupBy':
-            case 'addGroupBy':
             case 'having':
             case 'andHaving':
             case 'orHaving':
