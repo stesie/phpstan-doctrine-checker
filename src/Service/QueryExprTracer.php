@@ -166,8 +166,8 @@ class QueryExprTracer
             $whereArg->right instanceof Scalar\String_ &&
             $whereArg->left instanceof Expr\BinaryOp\Concat &&
             $whereArg->left->left instanceof Scalar\String_ &&
-            trim($whereArg->left->left->value) === '(' &&
-            trim($whereArg->right->value) === ')'
+            \trim($whereArg->left->left->value) === '(' &&
+            \trim($whereArg->right->value) === ')'
         ) {
             $whereArg = $whereArg->left->right;
         }
