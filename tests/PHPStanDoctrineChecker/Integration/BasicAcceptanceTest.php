@@ -13,61 +13,61 @@ class BasicAcceptanceTest extends IntegrationTestCase
     public function testBasicViolation()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/BasicViolationTest.php');
-        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 19, $errors);
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join on p', 19, $errors);
     }
 
     public function testBasicViolationWithChainedCalls()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/BasicViolationCallChainTest.php');
-        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 11, $errors);
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join on p', 11, $errors);
     }
 
     public function testBasicViolationInInnerJoin()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/BasicViolationInInnerJoinTest.php');
-        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 11, $errors);
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join on p', 11, $errors);
     }
 
     public function testBasicViolationInLeftJoin()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/BasicViolationInLeftJoinTest.php');
-        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 11, $errors);
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join on p', 11, $errors);
     }
 
     public function testBasicViolationInLeftJoinWithCastQueryBuilder()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/BasicViolationInLeftJoinWithCastQueryBuilderTest.php');
-        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 13, $errors);
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join on p', 13, $errors);
     }
 
     public function testBasicViolationArraySelect()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/BasicViolationArraySelect.php');
-        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 11, $errors);
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join on p', 11, $errors);
     }
 
     public function testBasicViolationConditionInVariable()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/BasicViolationConditionInVariable.php');
-        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 14, $errors);
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join on p', 14, $errors);
     }
 
     public function testComparisonToString()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/ComparisonToString.php');
-        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 14, $errors);
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join on p', 14, $errors);
     }
 
     public function testCompositeToString()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/CompositeToString.php');
-        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 14, $errors);
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join on p', 14, $errors);
     }
 
     public function testJoinCompositeToString()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/JoinCompositeToString.php');
-        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 14, $errors);
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join on p', 14, $errors);
     }
 
     public function testBasicViolationConditionNotMergedVariable()
@@ -79,7 +79,7 @@ class BasicAcceptanceTest extends IntegrationTestCase
     public function testBasicViolationConditionStringTypeExpression()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/BasicViolationConditionStringTypeExpression.php');
-        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 14, $errors);
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join on p', 14, $errors);
     }
 
     public function testExprAll()

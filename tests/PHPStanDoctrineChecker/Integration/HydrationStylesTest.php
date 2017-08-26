@@ -7,6 +7,6 @@ class HydrationStylesTest extends IntegrationTestCase
     public function testObjectHydrationWithGetResult()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/ObjectHydrationWithGetResult.php');
-        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 11, $errors);
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join on p', 11, $errors);
     }
 }

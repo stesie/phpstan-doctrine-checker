@@ -41,8 +41,10 @@ class FetchJoinCheckerRule implements Rule
 
         $errors = [];
 
-        if (!empty($calleeType->getQueryBuilderInfo()->getConflictingFetches())) {
-            $errors[] = 'DQL Query uses invalid filtered fetch-join';
+        $conflictingFetches = $calleeType->getQueryBuilderInfo()->getConflictingFetches();
+
+        if (!empty($conflictingFetches)) {
+            $errors[] = 'DQL Query uses invalid filtered fetch-join on ' . \implode(',', $conflictingFetches);
         }
 
         if ($calleeType->getQueryBuilderInfo()->isRangeFiltered()) {
