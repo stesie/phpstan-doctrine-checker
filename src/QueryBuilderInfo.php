@@ -31,19 +31,11 @@ class QueryBuilderInfo
         }
     }
 
-    public function resetSelect()
-    {
-        $this->selects = [];
-    }
-
     public function addSelect(string $alias)
     {
-        $this->selects[] = $alias;
-    }
-
-    public function resetWhere()
-    {
-        $this->dirty = [];
+        if (!\in_array($alias, $this->selects)) {
+            $this->selects[] = $alias;
+        }
     }
 
     public function addDirtyAlias(string $alias)

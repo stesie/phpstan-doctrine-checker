@@ -23,10 +23,7 @@ class QueryBuilderTracer
     public function processNode(QueryBuilderInfo $queryBuilderInfo, MethodCall $node, Scope $scope)
     {
         switch ($node->name) {
-            /** @noinspection PhpMissingBreakStatementInspection */
             case 'select':
-                $queryBuilderInfo->resetSelect();
-                /* fall through */
             case 'addSelect':
                 if (\count($node->args) >= 1 && $node->args[0]->value instanceof Expr\Array_) {
                     $args = $node->args[0]->value->items;
@@ -51,12 +48,14 @@ class QueryBuilderTracer
                 }
                 break;
 
-            /** @noinspection PhpMissingBreakStatementInspection */
             case 'where':
-                $queryBuilderInfo->resetWhere();
-                /* fall through */
             case 'andWhere':
             case 'orWhere':
+            case 'groupBy':
+            case 'addGroupBy':
+            case 'having':
+            case 'andHaving':
+            case 'orHaving':
                 $this->queryExprTracer->processWherePart($node->args[0]->value, $queryBuilderInfo, $scope);
                 break;
 
