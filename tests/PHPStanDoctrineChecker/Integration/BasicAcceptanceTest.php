@@ -52,9 +52,15 @@ class BasicAcceptanceTest extends IntegrationTestCase
         $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 14, $errors);
     }
 
-    public function testBasicViolationConditionInVariableWithToString()
+    public function testComparisonToString()
     {
-        $errors = $this->runAnalyse(__DIR__ . '/data/BasicViolationConditionInVariableWithToString.php');
+        $errors = $this->runAnalyse(__DIR__ . '/data/ComparisonToString.php');
+        $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 14, $errors);
+    }
+
+    public function testCompositeToString()
+    {
+        $errors = $this->runAnalyse(__DIR__ . '/data/CompositeToString.php');
         $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 14, $errors);
     }
 

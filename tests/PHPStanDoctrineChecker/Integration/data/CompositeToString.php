@@ -4,12 +4,12 @@ namespace PHPStanDoctrineChecker\Integration\data;
 
 use Doctrine\ORM\EntityRepository;
 
-class BasicViolationConditionInVariableWithToString
+class CompositeToString
 {
     public function run(EntityRepository $repository)
     {
         $queryBuilder = $repository->createQueryBuilder('u');
-        $condition = $queryBuilder->expr()->eq('p.type', ':type')->__toString();
+        $condition = $queryBuilder->expr()->andX('p.type = :type')->__toString();
 
         $queryBuilder
             ->select('u', 'p')
