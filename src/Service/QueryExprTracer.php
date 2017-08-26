@@ -5,7 +5,6 @@ namespace PHPStanDoctrineChecker\Service;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Parser;
 use PHPStan\Analyser\Scope;
-use PHPStan\Type\ObjectType;
 use PHPStanDoctrineChecker\Exceptions\NotImplementedException;
 use PHPStanDoctrineChecker\QueryBuilderInfo;
 use PHPStanDoctrineChecker\Service\QueryBuilderTracer\DummyEntityManager;
@@ -153,30 +152,18 @@ class QueryExprTracer
      */
     private function processExpression(Expr $whereArg, QueryBuilderInfo $queryBuilderInfo, Scope $scope)
     {
-        if ($whereArg instanceof MethodCall) {
-            $thisPtr = $scope->getType($whereArg->var);
-
-            if ($thisPtr instanceof ObjectType && $thisPtr->getClass() === Query\Expr::class) {
-                $this->processExprMethodCall($queryBuilderInfo, $whereArg, $scope);
-                return;
-            }
-        }
-
         if ($whereArg instanceof Scalar\String_) {
             $this->processArithmeticExpression($whereArg->value, $queryBuilderInfo);
             return;
         }
 
-        if ($whereArg instanceof Expr\Variable) {
-            $variableType = $scope->getType($whereArg);
+        $whereArgType = $scope->getType($whereArg);
 
-            if ($variableType instanceof QueryBuilderInfoOwningType) {
-                $queryBuilderInfo->merge($variableType->getQueryBuilderInfo());
-                return;
-            }
+        if ($whereArgType instanceof QueryBuilderInfoOwningType) {
+            $queryBuilderInfo->merge($whereArgType->getQueryBuilderInfo());
+            return;
         }
 
         throw new \LogicException('not yet implemented');
     }
-
 }

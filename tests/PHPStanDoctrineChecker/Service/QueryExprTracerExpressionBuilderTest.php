@@ -63,19 +63,7 @@ class QueryExprTracerExpressionBuilderTest extends TestCase
         $queryBuilderInfo = new QueryBuilderInfo('u');
 
         $this->callExprMethod($queryBuilderInfo, 'andX', [
-            new Arg(
-                new Expr\MethodCall(
-                    new Expr\MethodCall(
-                        new Expr\Variable('queryBuilder'),
-                        'expr'
-                    ),
-                    'eq',
-                    [
-                        new Arg(new String_('xyz.type')),
-                        new Arg(new String_(':type')),
-                    ]
-                )
-            ),
+            new Arg(new String_('xyz.type = :type')),
         ]);
 
         $this->assertEquals(['xyz'], $queryBuilderInfo->getDirtyAliases());
@@ -86,19 +74,7 @@ class QueryExprTracerExpressionBuilderTest extends TestCase
         $queryBuilderInfo = new QueryBuilderInfo('u');
 
         $this->callExprMethod($queryBuilderInfo, 'orX', [
-            new Arg(
-                new Expr\MethodCall(
-                    new Expr\MethodCall(
-                        new Expr\Variable('queryBuilder'),
-                        'expr'
-                    ),
-                    'eq',
-                    [
-                        new Arg(new String_('xyz.type')),
-                        new Arg(new String_(':type')),
-                    ]
-                )
-            ),
+            new Arg(new String_('xyz.type = :type')),
         ]);
 
         $this->assertEquals(['xyz'], $queryBuilderInfo->getDirtyAliases());
@@ -186,20 +162,8 @@ class QueryExprTracerExpressionBuilderTest extends TestCase
     {
         $queryBuilderInfo = new QueryBuilderInfo('u');
 
-        $this->callExprMethod($queryBuilderInfo, 'lt', [
-            new Arg(
-                new Expr\MethodCall(
-                    new Expr\MethodCall(
-                        new Expr\Variable('queryBuilder'),
-                        'expr'
-                    ),
-                    $functionName,
-                    [
-                        new Arg(new String_('xyz.value')),
-                    ]
-                )
-            ),
-            new Arg(new String_(':some_value')),
+        $this->callExprMethod($queryBuilderInfo, $functionName, [
+                new Arg(new String_('xyz.value')),
         ]);
 
         $this->assertEquals(['xyz'], $queryBuilderInfo->getDirtyAliases());
@@ -229,21 +193,9 @@ class QueryExprTracerExpressionBuilderTest extends TestCase
     {
         $queryBuilderInfo = new QueryBuilderInfo('u');
 
-        $this->callExprMethod($queryBuilderInfo, 'lt', [
-            new Arg(
-                new Expr\MethodCall(
-                    new Expr\MethodCall(
-                        new Expr\Variable('queryBuilder'),
-                        'expr'
-                    ),
-                    $functionName,
-                    [
-                        new Arg(new String_('xyz.valueA')),
-                        new Arg(new String_('xyz.valueB')),
-                    ]
-                )
-            ),
-            new Arg(new String_(':some_value')),
+        $this->callExprMethod($queryBuilderInfo, $functionName, [
+            new Arg(new String_('xyz.valueA')),
+            new Arg(new String_('xyz.valueB')),
         ]);
 
         $this->assertEquals(['xyz'], $queryBuilderInfo->getDirtyAliases());
