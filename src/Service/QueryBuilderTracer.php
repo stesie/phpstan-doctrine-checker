@@ -3,6 +3,7 @@
 namespace PHPStanDoctrineChecker\Service;
 
 use PHPStan\Analyser\Scope;
+use PHPStanDoctrineChecker\Exceptions\NotImplementedException;
 use PHPStanDoctrineChecker\QueryBuilderInfo;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
@@ -50,7 +51,11 @@ class QueryBuilderTracer
 
             case 'groupBy':
             case 'addGroupBy':
-                $this->queryExprTracer->processIdentificationVariable($node->args[0]->value->value, $queryBuilderInfo, $scope);
+                if (!$node->args[0]->value instanceof Scalar\String_) {
+                    throw new NotImplementedException('non-string arguments to (add)groupBy not supported yet');
+                }
+
+                $this->queryExprTracer->processIdentificationVariable($node->args[0]->value->value, $queryBuilderInfo);
                 break;
 
             case 'where':
