@@ -82,6 +82,12 @@ class BasicAcceptanceTest extends IntegrationTestCase
         $this->assertSingleError('DQL Query uses invalid filtered fetch-join', 14, $errors);
     }
 
+    public function testExprAll()
+    {
+        $errors = $this->runAnalyse(__DIR__ . '/data/ExprAllTest.php');
+        $this->assertNoErrors($errors);
+    }
+
     public function testRangeFilterUse()
     {
         $errors = $this->runAnalyse(__DIR__ . '/data/RangeFilterTest.php');

@@ -66,6 +66,7 @@ class QueryExprTracer
 
             case 'in':
             case 'notIn':
+            case 'all':
                 $this->processExpression($methodCall->args[0]->value, $queryBuilderInfo, $scope);
                 return;
         }
