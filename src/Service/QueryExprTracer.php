@@ -66,6 +66,9 @@ class QueryExprTracer
 
             case 'in':
             case 'notIn':
+                $this->processInExpression($methodCall, $queryBuilderInfo, $scope);
+                return;
+
             case 'all':
                 $this->processExpression($methodCall->args[0]->value, $queryBuilderInfo, $scope);
                 return;
@@ -166,5 +169,20 @@ class QueryExprTracer
         }
 
         throw new \LogicException('not yet implemented');
+    }
+
+    private function processInExpression(MethodCall $methodCall, QueryBuilderInfo $queryBuilderInfo, Scope $scope)
+    {
+        $this->processExpression($methodCall->args[0]->value, $queryBuilderInfo, $scope);
+
+        if ($methodCall->args[1]->value instanceof Expr\Array_) {
+            return;
+        }
+
+        $type = $scope->getType($methodCall->args[1]->value);
+
+        if ($type instanceof QueryBuilderInfoOwningType) {
+            $queryBuilderInfo->merge($type->getQueryBuilderInfo());
+        }
     }
 }
