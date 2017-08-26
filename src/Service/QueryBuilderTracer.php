@@ -76,8 +76,14 @@ class QueryBuilderTracer
                 /* ignore here, creates new trace and possibly merges via other call */
                 break;
 
+            case 'getDQL':
             case 'getQuery':
                 /* everything should be traced already, nothing left to do :-) */
+                break;
+
+            case 'orderBy':
+            case 'addOrderBy':
+                /* ordering doesn't hurt, just ignore */
                 break;
 
             default:
